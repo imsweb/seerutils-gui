@@ -1,0 +1,80 @@
+<FindBugsFilter>
+    
+    <!-- Ignore some special classes -->
+    <Match classregex=".+\.Lexer.+" />
+    
+    <!-- ignore passing null to a method -->
+    <Match>
+       <Bug pattern="NP_NULL_PARAM_DEREF" />
+     </Match>
+
+    <!-- ignore floating point comparison-->
+    <Match>
+       <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
+     </Match>
+
+    <!-- Invoking System.exit shuts down the entire Java virtual machine. -->
+    <Match>
+       <Bug pattern="DM_EXIT" />
+     </Match>
+
+    <!-- Consider using Locale parameterized version of invoked method : String.toUpperCase( Locale l ) -->
+    <Match>
+       <Bug pattern="DM_CONVERT_CASE" />
+     </Match>
+
+    <!-- Class is Serializable, but doesn't define serialVersionUID  -->
+    <Match>
+       <Bug pattern="SE_NO_SERIALVERSIONID" />
+     </Match>
+
+    <!-- Non-transient non-serializable instance field in serializable class  -->
+    <Match>
+       <Bug pattern="SE_BAD_FIELD" />
+     </Match>
+
+    <!-- May expose internal representation by returning reference to mutable object  -->
+    <Match>
+       <Bug pattern="EI_EXPOSE_REP" />
+     </Match>
+
+    <!-- May expose internal representation by incorporating reference to mutable object  -->
+    <Match>
+       <Bug pattern="EI_EXPOSE_REP2" />
+     </Match>
+
+    <!-- Test for circular dependencies among classes  -->
+    <Match>
+       <Bug pattern="CD_CIRCULAR_DEPENDENCY" />
+     </Match>
+
+    <!-- A prepared statement is generated from a nonconstant String   -->
+    <Match>
+       <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING" />
+     </Match>
+
+    <!-- Field is a mutable array   -->
+    <Match>
+       <Bug pattern="MS_MUTABLE_ARRAY" />
+     </Match>
+
+    <!-- Field should be package protected, related to the one above : MS_MUTABLE_ARRAY  -->
+    <Match>
+       <Bug pattern="MS_PKGPROTECT" />
+     </Match>
+
+    <!-- we get those as java warning already  -->
+    <Match>
+       <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
+     </Match>
+
+    <Match>
+       <Bug pattern="DM_DEFAULT_ENCODING"/>
+     </Match>
+    
+    <Match>
+       <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"/>
+     </Match>
+
+
+</FindBugsFilter>

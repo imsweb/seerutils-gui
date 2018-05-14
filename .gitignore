@@ -1,0 +1,21 @@
+# generic
+*.lock
+dist/*
+**/dist/*
+build/*
+**/build/*
+target/*
+**/target/*
+classes/*
+**/classes/*
+out/*
+**/out/*
+
+# intellij
+*.iml
+.idea/*
+**/.idea/*
+
+# gradle
+.gradle/*
+**/.gradle/*
