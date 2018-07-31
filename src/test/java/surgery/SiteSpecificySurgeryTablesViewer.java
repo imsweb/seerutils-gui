@@ -43,10 +43,10 @@ import javax.swing.text.html.HTMLEditorKit;
 import com.imsweb.algorithms.surgery.SiteSpecificSurgeryUtils;
 import com.imsweb.algorithms.surgery.SurgeryRowDto;
 import com.imsweb.algorithms.surgery.SurgeryTableDto;
-import com.imsweb.shared.gui.SeerGuiUtils;
-import com.imsweb.shared.gui.SeerList;
-import com.imsweb.shared.gui.table.SeerColumn;
-import com.imsweb.shared.gui.table.SeerTable;
+import com.imsweb.seerutilsgui.SeerGuiUtils;
+import com.imsweb.seerutilsgui.SeerList;
+import com.imsweb.seerutilsgui.table.SeerColumn;
+import com.imsweb.seerutilsgui.table.SeerTable;
 
 public class SiteSpecificySurgeryTablesViewer extends JFrame {
 

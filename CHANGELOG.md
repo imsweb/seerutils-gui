@@ -1,8 +1,11 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.11**
+
+- Renamed root package in preparation of switch to Java modules.
+
 **Changes in version 1.10**
 
-- Updated commons-lang3 to version 3.6
 - Restructured some code, cleaned up a few things; no changes to the behavior of the library.
 
 **Changes in version 1.9**

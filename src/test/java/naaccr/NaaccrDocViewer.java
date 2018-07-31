@@ -45,11 +45,11 @@ import com.imsweb.layout.Field;
 import com.imsweb.layout.Layout;
 import com.imsweb.layout.LayoutFactory;
 import com.imsweb.seerutils.SeerUtils;
-import com.imsweb.shared.gui.SeerBoldTitlesTabbedPane;
-import com.imsweb.shared.gui.SeerBoldTitlesTabbedPanePage;
-import com.imsweb.shared.gui.SeerGuiUtils;
-import com.imsweb.shared.gui.SeerList;
-import com.imsweb.shared.gui.editor.SyntaxKit;
+import com.imsweb.seerutilsgui.SeerBoldTitlesTabbedPane;
+import com.imsweb.seerutilsgui.SeerBoldTitlesTabbedPanePage;
+import com.imsweb.seerutilsgui.SeerGuiUtils;
+import com.imsweb.seerutilsgui.SeerList;
+import com.imsweb.seerutilsgui.editor.SyntaxKit;
 
 @SuppressWarnings({"ConstantConditions", "MagicConstant"})
 public class NaaccrDocViewer extends JFrame {
