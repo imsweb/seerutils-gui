@@ -6,15 +6,12 @@ package com.imsweb.seerutilsgui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
@@ -22,10 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import javax.swing.plaf.basic.BasicComboPopup;
-import javax.swing.plaf.basic.ComboPopup;
-
-import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
 
 /**
  * This class is a special <b>JComboBox</b> that displays its items as checkboxes and allow several of them to be selected.
@@ -51,40 +44,15 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
     private String _multSelectedTxt, _noSelectedTxt;
     private Color _multSelectedColor, _noSelectedColor, _oneSelectedColor;
 
-    // whether the controls should be displayed
-    private boolean _showControls, _showCloseBtn;
-
     // the instances of the checkboxes
     private List<SeerMultiSelectCheckBoxDto> _checkboxes;
 
-    // the customized UI to use
-    private SeerMultiSelectComboBoxUI _ui;
-
     /**
      * Constructor.
      * @param items list of items to display as checkboxes
-     */
-    public SeerMultiSelectComboBox(List<T> items) {
-        this(items, false);
-    }
-
-    /**
-     * Constructor.
-     * @param items list of items to display as checkboxes
-     * @param showControls if true, the control buttons will be displayed at the bottom of the popup
-     */
-    public SeerMultiSelectComboBox(List<T> items, boolean showControls) {
-        this(items, showControls, false);
-    }
-
-    /**
-     * Constructor.
-     * @param items list of items to display as checkboxes
-     * @param showControls if true, the control buttons will be displayed at the bottom of the popup
-     * @param showCloseBtn if true, the controls will include a close button; this has no effect if showControls is set to false
      */
     @SuppressWarnings("unchecked")
-    public SeerMultiSelectComboBox(List<T> items, boolean showControls, boolean showCloseBtn) {
+    public SeerMultiSelectComboBox(List<T> items) {
 
         // initialize a bunch of internal variables
         _multSelectedTxt = MULTIPLE_SELECTION_TEXT;
@@ -92,19 +60,7 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
         _multSelectedColor = MULTIPLE_SELECTION_COLOR;
         _noSelectedColor = NO_SELECTION_COLOR;
         _oneSelectedColor = ONE_SELECTION_COLOR;
-        _showControls = showControls;
-        _showCloseBtn = showCloseBtn;
         _checkboxes = new ArrayList<>();
-
-        // the customized UI is used to add the controls at the bottom; it would be simple to add support for other 
-        // look-and-feel, but all our SEER applications use the Windows L&A, so what's the point. If for some reason 
-        // the L&A is not the Windows one, the controls won't be available...
-        if (getUI() instanceof WindowsComboBoxUI) {
-            _ui = new SeerMultiSelectComboBoxUI();
-            setUI(_ui);
-        }
-        else if (_showControls)
-            throw new RuntimeException("Controls are available only with the Windows Look And Feel...");
 
         // it's important to keep track of the longest value in the checkboxes to properly set the preferred size...
         int maxWidth = 0;
@@ -119,8 +75,6 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
         setRenderer(new CheckBoxRenderer(_checkboxes));
 
         // also take into account the controls, and the selection text to get the maximum width
-        if (_ui != null)
-            maxWidth = Math.max(maxWidth, _ui.getPopup().getControlsWidth());
         maxWidth = Math.max(maxWidth, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _multSelectedTxt) + 25);
         maxWidth = Math.max(maxWidth, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _noSelectedTxt) + 25);
 
@@ -169,25 +123,6 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
                 }
             }
         }
-        refreshComponent();
-    }
-
-    /**
-     * Select all the checkboxes.
-     */
-    public void selectAll() {
-        List<T> l = new ArrayList<>();
-        for (SeerMultiSelectCheckBoxDto dto : _checkboxes)
-            l.add(dto.getItem());
-        setSelectedItems(l);
-        refreshComponent();
-    }
-
-    /**
-     * Clears all the checkboxes
-     */
-    public void clearAll() {
-        setSelectedItems(new ArrayList<>());
         refreshComponent();
     }
 
@@ -248,8 +183,6 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
             cb.setSelected(!cb.isSelected());
 
         this.repaint();
-        if (_ui != null)
-            _ui.getPopup().repaint();
     }
 
     @Override
@@ -259,12 +192,10 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
 
     protected void refreshComponent() {
         this.repaint();
-        if (_ui != null)
-            _ui.getPopup().repaint();
     }
 
     /**
-     * With so much customizatio in the rendering, we obviously need to use our own renderer object! :-)
+     * With so much customization in the rendering, we obviously need to use our own renderer object! :-)
      */
     private class CheckBoxRenderer implements ListCellRenderer {
 
@@ -336,77 +267,4 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
             return _item;
         }
     }
-
-    /**
-     * Need to customize the popup (which is implemented as a menu) to add the controls at the bottom...
-     */
-    private class SeerMultiSelectComboPopup extends BasicComboPopup implements ActionListener {
-
-        private JPanel _extraPnl;
-
-        public SeerMultiSelectComboPopup(JComboBox combo) {
-            super(combo);
-
-            if (_showControls) {
-                _extraPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 2));
-                _extraPnl.setBorder(new SeerOptionalSidesLineBorder(Color.BLACK, true, false, false, false));
-
-                JButton selectAllBtn = new JButton("Select All");
-                selectAllBtn.setActionCommand("select-all");
-                selectAllBtn.addActionListener(this);
-                selectAllBtn.setFocusable(false);
-                _extraPnl.add(selectAllBtn);
-
-                JButton clearAllBtn = new JButton("Clear All");
-                clearAllBtn.setActionCommand("clear-all");
-                clearAllBtn.addActionListener(this);
-                clearAllBtn.setFocusable(false);
-                _extraPnl.add(clearAllBtn);
-
-                if (_showCloseBtn) {
-                    JButton closeBtn = new JButton(" Close ");
-                    closeBtn.setActionCommand("close");
-                    closeBtn.addActionListener(this);
-                    closeBtn.setFocusable(false);
-                    _extraPnl.add(closeBtn);
-                }
-
-                add(_extraPnl);
-            }
-        }
-
-        public int getControlsWidth() {
-            return _extraPnl == null ? 0 : _extraPnl.getPreferredSize().width;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String action = e.getActionCommand();
-            if ("select-all".equals(action))
-                selectAll();
-            else if ("clear-all".equals(action))
-                clearAll();
-            else if ("close".equals(action))
-                this.setVisible(false);
-        }
-    }
-
-    /**
-     * This really sucks, but the only way to register our own popup is to have our own UI :-(
-     */
-    private class SeerMultiSelectComboBoxUI extends WindowsComboBoxUI {
-
-        private SeerMultiSelectComboPopup _popup;
-
-        @Override
-        protected ComboPopup createPopup() {
-            _popup = new SeerMultiSelectComboPopup(comboBox);
-            return _popup;
-        }
-
-        public SeerMultiSelectComboPopup getPopup() {
-            return _popup;
-        }
-    }
-
 }

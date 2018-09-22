@@ -1,5 +1,9 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.12**
+
+- Removed controls from SeerMultiSelectComboBox.
+
 **Changes in version 1.11**
 
 - Renamed root package in preparation of switch to Java modules.

@@ -96,7 +96,7 @@ public class SeerMultiSelectComboBoxTest {
             list4.add("String #" + i);
         list4.add(null); // this is a separator
         list4.add("This is a much longer item in the list");
-        final SeerMultiSelectComboBox<String> combo4 = new SeerMultiSelectComboBox<>(list4, true, true);
+        final SeerMultiSelectComboBox<String> combo4 = new SeerMultiSelectComboBox<>(list4);
         combo4.setName("Combo #4");
         combo4.setMaximumRowCount(10); // no scrolling...
         combo4.addPopupMenuListener(listener);
@@ -108,7 +108,7 @@ public class SeerMultiSelectComboBoxTest {
         List<String> list5 = new ArrayList<>();
         for (int i = 0; i < 7; i++)
             list5.add("String #" + i);
-        final SeerMultiSelectComboBox<String> combo5 = new SeerMultiSelectComboBox<>(list5, true, false);
+        final SeerMultiSelectComboBox<String> combo5 = new SeerMultiSelectComboBox<>(list5);
         combo5.setName("Combo #5");
         combo5.setMaximumRowCount(7); // no scrolling...
         combo5.setNoSelectionText("Select something now!");
