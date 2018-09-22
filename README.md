@@ -1,6 +1,5 @@
 # SEER*Utils GUI
 
-[![Build Status](https://travis-ci.org/imsweb/seerutils-gui.svg?branch=master)](https://travis-ci.org/imsweb/seerutils-gui)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imsweb/seerutils-gui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imsweb/seerutils-gui)
 
 This project contains a few GUI utility classes for SEER Java projects.
