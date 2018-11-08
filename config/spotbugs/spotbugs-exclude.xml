@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+<Match>
+  <Class name="~com\.imsweb\.seerutilsgui\.editor\.Lexer.*"/>
+</Match>
+<Match>
+  <Class name="~.*\.*Test.*"/>
+</Match>
+<Match>
+  <Package name="naaccr"/>
+</Match>
+<Match>
+  <Package name="surgery"/>
+</Match>
+</FindBugsFilter>
