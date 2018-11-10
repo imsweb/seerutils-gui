@@ -4,8 +4,6 @@
 package com.imsweb.seerutilsgui;
 
 
-import com.imsweb.seerutilsgui.spinner.SeerSpinner;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

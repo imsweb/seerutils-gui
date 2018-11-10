@@ -1,4 +1,4 @@
-package com.imsweb.seerutilsgui.spinner;
+package com.imsweb.seerutilsgui;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
