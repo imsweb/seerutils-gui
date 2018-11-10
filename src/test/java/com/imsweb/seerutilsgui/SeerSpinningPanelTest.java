@@ -3,24 +3,21 @@
  */
 package com.imsweb.seerutilsgui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SeerSpinningPanelTest {
 
     private static List<SeerSpinningPanel> _PNL = new ArrayList<>();
 
-    private static boolean _IS_SPINNING = false;
+    private static boolean _IS_SPINNING = true;
 
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
@@ -33,19 +30,16 @@ public class SeerSpinningPanelTest {
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(contentPnl, BorderLayout.CENTER);
 
-        JButton btn = SeerGuiUtils.createButton("TOGGLE SPINNING", "action", "tooltip", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (_IS_SPINNING) {
-                    for (SeerSpinningPanel p : _PNL)
-                        p.stopSpinning();
-                }
-                else {
-                    for (SeerSpinningPanel p : _PNL)
-                        p.startSpinning();
-                }
-                _IS_SPINNING = !_IS_SPINNING;
+        JButton btn = SeerGuiUtils.createButton("TOGGLE SPINNING", "action", "tooltip", arg0 -> {
+            if (_IS_SPINNING) {
+                for (SeerSpinningPanel p : _PNL)
+                    p.stopSpinning();
             }
+            else {
+                for (SeerSpinningPanel p : _PNL)
+                    p.startSpinning();
+            }
+            _IS_SPINNING = !_IS_SPINNING;
         });
         contentPnl.add(btn, BorderLayout.NORTH);
 

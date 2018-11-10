@@ -3,31 +3,21 @@
  */
 package com.imsweb.seerutilsgui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.Ellipse2D;
 
-import javax.swing.BorderFactory;
+import com.imsweb.seerutilsgui.spinner.SeerSpinner;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
-
-import org.jdesktop.jxlayer.JXLayer;
-import org.jdesktop.jxlayer.plaf.ext.LockableUI;
-import org.jdesktop.swingx.painter.BusyPainter;
+import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 
 public class SeerSpinningPanel extends JPanel {
 
-    private transient LockableUI _spinningUI;
+    private SeerSpinner _spinner;
 
     private JLabel _topLbl, _firstBottomLbl, _secondBottomLbl;
 
@@ -52,13 +42,8 @@ public class SeerSpinningPanel extends JPanel {
             searchPnl.add(Box.createVerticalStrut(topGap));
         }
 
-        JPanel spinPnl = SeerGuiUtils.createPanel();
-        spinPnl.setBorder(BorderFactory.createEmptyBorder());
-        spinPnl.setPreferredSize(new Dimension(size, size));
-        _spinningUI = new BusyPainterUI(size / 6, size / 3 * 2);
-        JXLayer<JComponent> spinningPnl = new JXLayer<>(spinPnl, _spinningUI);
-        spinningPnl.setOpaque(false);
-        searchPnl.add(spinningPnl);
+        _spinner = new SeerSpinner(size);
+        searchPnl.add(_spinner);
 
         if (bottomLbl1 != null) {
             searchPnl.add(Box.createVerticalStrut(bottomGap1));
@@ -83,14 +68,16 @@ public class SeerSpinningPanel extends JPanel {
         searchWrapperPnl.add(searchPnl);
 
         this.add(searchWrapperPnl, BorderLayout.CENTER);
+
+        SwingUtilities.invokeLater(() -> _spinner.startSpinning());
     }
 
     public void startSpinning() {
-        _spinningUI.setLocked(true);
+        _spinner.startSpinning();
     }
 
     public void stopSpinning() {
-        _spinningUI.setLocked(false);
+        _spinner.stopSpinning();
     }
 
     public void setTopLabel(String lbl) {
@@ -106,55 +93,5 @@ public class SeerSpinningPanel extends JPanel {
     public void setSecondBottomLabel(String lbl) {
         if (_secondBottomLbl != null)
             _secondBottomLbl.setText(lbl);
-    }
-
-    private static class BusyPainterUI extends LockableUI implements ActionListener {
-
-        private transient BusyPainter _busyPainter;
-
-        private Timer _timer;
-
-        private int _frameNumber = 0;
-
-        public BusyPainterUI(int pointShape, int trajectory) {
-            _busyPainter = new BusyPainter() {
-                @Override
-                protected void doPaint(Graphics2D g, Object object, int width, int height) {
-                    Rectangle r = getTrajectory().getBounds();
-                    int tw = width - r.width - 2 * r.x;
-                    int th = height - r.height - 2 * r.y;
-                    g.translate(tw / 2, th / 2);
-                    super.doPaint(g, object, width, height);
-                }
-            };
-
-            _busyPainter.setPointShape(new Ellipse2D.Double(0, 0, pointShape, pointShape));
-            _busyPainter.setTrajectory(new Ellipse2D.Double(0, 0, trajectory, trajectory));
-
-            _timer = new Timer(100, this);
-        }
-
-        @Override
-        protected void paintLayer(Graphics2D g2, JXLayer<? extends JComponent> l) {
-            super.paintLayer(g2, l);
-            if (isLocked())
-                _busyPainter.paint(g2, l, l.getWidth(), l.getHeight());
-        }
-
-        @Override
-        public void setLocked(boolean isLocked) {
-            super.setLocked(isLocked);
-            if (isLocked)
-                _timer.start();
-            else
-                _timer.stop();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            _frameNumber = (_frameNumber + 1) % 8;
-            _busyPainter.setFrame(_frameNumber);
-            setDirty(true);
-        }
     }
 }
