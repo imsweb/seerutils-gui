@@ -25,10 +25,8 @@ repositories {
 dependencies {
     api 'org.swinglabs:jxlayer:3.0.4'
     api 'org.swinglabs.swingx:swingx-painters:1.6.4'
-    api('org.xhtmlrenderer:core-renderer:R8') {
-        exclude module: 'itext'
-    }
 
+    testImplementation 'org.xhtmlrenderer:flying-saucer-core:9.1.16'
     testImplementation 'org.apache.commons:commons-lang3:3.7'
     testImplementation 'com.opencsv:opencsv:4.2'
     testImplementation 'com.imsweb:seerutils:5.5'
