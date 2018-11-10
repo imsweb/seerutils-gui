@@ -1,8 +1,5 @@
 package com.imsweb.seerutilsgui;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,6 +15,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class SeerSpinner extends JPanel implements ActionListener {
 
@@ -46,7 +47,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
         setOpaque(false);
     }
 
-    private void doPaint(Graphics2D g, Object t, int width, int height) {
+    private void doPaint(Graphics2D g, int width, int height) {
         Rectangle r = _trajectoryShape.getBounds();
         int tw = width - r.width - 2 * r.x;
         int th = height - r.height - 2 * r.y;
@@ -63,7 +64,8 @@ public class SeerSpinner extends JPanel implements ActionListener {
         do {
             try {
                 ret = pi.currentSegment(coords);
-            } catch (NoSuchElementException e) {
+            }
+            catch (NoSuchElementException e) {
                 // invalid object definition - one of the bounds is zero or less
                 return;
             }
@@ -72,7 +74,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
                 float c = calcLine(coords, cp);
                 totalDist += c;
                 // move the point to the end (just so it is same for all of them
-                segStack.add(new float[]{c, 0, 0, 0, 0, coords[0], coords[1], ret});
+                segStack.add(new float[] {c, 0, 0, 0, 0, coords[0], coords[1], ret});
                 cp.x = coords[0];
                 cp.y = coords[1];
             }
@@ -84,7 +86,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
             if (ret == PathIterator.SEG_CUBICTO) {
                 float c = calcCube(coords, cp);
                 totalDist += c;
-                segStack.add(new float[]{c, coords[0], coords[1], coords[2],
+                segStack.add(new float[] {c, coords[0], coords[1], coords[2],
                         coords[3], coords[4], coords[5], ret});
                 cp.x = coords[4];
                 cp.y = coords[5];
@@ -92,7 +94,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
             if (ret == PathIterator.SEG_QUADTO) {
                 float c = calcLengthOfQuad(coords, cp);
                 totalDist += c;
-                segStack.add(new float[]{c, coords[0], coords[1], 0, 0, coords[2],
+                segStack.add(new float[] {c, coords[0], coords[1], 0, 0, coords[2],
                         coords[3], ret});
                 cp.x = coords[2];
                 cp.y = coords[3];
@@ -129,8 +131,8 @@ public class SeerSpinner extends JPanel implements ActionListener {
         }
 
         // calculate center
-        center.x = ((float) width) / 2;
-        center.y = ((float) height) / 2;
+        center.x = ((float)width) / 2;
+        center.y = ((float)height) / 2;
 
         // draw the stuff
         int i = 0;
@@ -181,7 +183,8 @@ public class SeerSpinner extends JPanel implements ActionListener {
             float pathLen = sgmt[0];
             f.x = startPoint.x + a * dist2go / pathLen;
             f.y = startPoint.y + b * dist2go / pathLen;
-        } else if (sgmt[7] == PathIterator.SEG_QUADTO) {
+        }
+        else if (sgmt[7] == PathIterator.SEG_QUADTO) {
             // quadratic curve
             Point2D.Float ctrl = new Point2D.Float(sgmt[1] / w, sgmt[2] / h);
             Point2D.Float end = new Point2D.Float(sgmt[5] / w, sgmt[6] / h);
@@ -192,7 +195,8 @@ public class SeerSpinner extends JPanel implements ActionListener {
             f.x *= w;
             f.y *= h;
 
-        } else if (sgmt[7] == PathIterator.SEG_CUBICTO) {
+        }
+        else if (sgmt[7] == PathIterator.SEG_CUBICTO) {
             // bezier curve
             float x = Math.abs(startPoint.x - sgmt[5]);
             float y = Math.abs(startPoint.y - sgmt[6]);
@@ -217,7 +221,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
     private float calcLine(float[] coords, Point2D.Float cp) {
         float a = cp.x - coords[0];
         float b = cp.y - coords[1];
-        return (float) Math.sqrt(a * a + b * b);
+        return (float)Math.sqrt(a * a + b * b);
     }
 
     private float calcCube(float[] coords, Point2D.Float cp) {
@@ -232,7 +236,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
         float prevLength = 0, prevX = 0, prevY = 0;
         for (float t = 0.01f; t <= 1.0f; t += .01f) {
             Point2D.Float xy = getXY(t, c1rx, c1ry, c2rx, c2ry);
-            prevLength += (float) Math.sqrt((xy.x - prevX) * (xy.x - prevX) + (xy.y - prevY) * (xy.y - prevY));
+            prevLength += (float)Math.sqrt((xy.x - prevX) * (xy.x - prevX) + (xy.y - prevY) * (xy.y - prevY));
             prevX = xy.x;
             prevY = xy.y;
         }
@@ -263,7 +267,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
         float prevLength = 0, prevX = 0, prevY = 0;
         for (float t = 0.01f; t <= 1.0f; t += .01f) {
             Point2D.Float xy = getXY(t, new Point2D.Float(0, 0), ctrl, end);
-            prevLength += (float) Math.sqrt((xy.x - prevX) * (xy.x - prevX)
+            prevLength += (float)Math.sqrt((xy.x - prevX) * (xy.x - prevX)
                     + (xy.y - prevY) * (xy.y - prevY));
             prevX = xy.x;
             prevY = xy.y;
@@ -272,13 +276,12 @@ public class SeerSpinner extends JPanel implements ActionListener {
         // prev len is a fraction num of the real path length
         float a = Math.abs(coords[2] - cp.x);
         float b = Math.abs(coords[3] - cp.y);
-        float dist = (float) Math.sqrt(a * a + b * b);
+        float dist = (float)Math.sqrt(a * a + b * b);
 
         return prevLength * dist;
     }
 
     private Point2D.Float getXY(float t, float x1, float y1, float x2, float y2) {
-        Point2D.Float xy;
         float invT = (1 - t);
         float b1 = 3 * t * (invT * invT);
         float b2 = 3 * (t * t) * invT;
@@ -287,7 +290,6 @@ public class SeerSpinner extends JPanel implements ActionListener {
     }
 
     private Point2D.Float getXY(float t, Point2D.Float begin, Point2D.Float ctrl, Point2D.Float end) {
-        Point2D.Float xy;
         float invT = (1 - t);
         float b0 = invT * invT;
         float b1 = 2 * t * invT;
@@ -301,7 +303,7 @@ public class SeerSpinner extends JPanel implements ActionListener {
 
         for (int t = 0; t < 4; t++) {
             if (i == (_currentFrame - t + _NUM_POINTS) % _NUM_POINTS) {
-                float terp = 1 - ((float) (4 - t)) / (float) 4;
+                float terp = 1 - ((float)(4 - t)) / (float)4;
                 return interpolate(_COLOR_BASE, _COLOR_HIGHLIGHT, terp);
             }
         }
@@ -333,10 +335,10 @@ public class SeerSpinner extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         if (!(g instanceof Graphics2D))
             return;
-        Graphics2D g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D)g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        doPaint(g2d, this, this.getWidth(), this.getHeight());
+        doPaint(g2d, this.getWidth(), this.getHeight());
     }
 
     @Override
