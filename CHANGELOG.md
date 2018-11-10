@@ -1,5 +1,10 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.13**
+
+- Removed dependency to third-party libraries.
+
+
 **Changes in version 1.12**
 
 - Removed controls from SeerMultiSelectComboBox.
