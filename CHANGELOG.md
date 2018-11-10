@@ -4,7 +4,6 @@
 
 - Removed dependency to third-party libraries.
 
-
 **Changes in version 1.12**
 
 - Removed controls from SeerMultiSelectComboBox.
