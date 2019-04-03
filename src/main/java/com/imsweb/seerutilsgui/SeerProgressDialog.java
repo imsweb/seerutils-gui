@@ -30,13 +30,18 @@ public class SeerProgressDialog<T, V> extends JDialog {
     private String _progressText;
     private SeerSpinningPanel _spinnerPnl;
     private String _spinnerText;
+    private JButton _cancelBtn;
 
     private SwingWorker<T, V> _worker;
 
     // is the worker canceled?
     private boolean _canceled = false;
 
-    public SeerProgressDialog(Window owner, int numberOfRecords, String spinnerText, String progressText) {
+    public SeerProgressDialog(Window owner, int numberToProcess, String spinnerText, String progressText) {
+        this(owner, numberToProcess, spinnerText, progressText, true);
+    }
+
+    public SeerProgressDialog(Window owner, int numberToProcess, String spinnerText, String progressText, boolean showCancel) {
         super(owner);
 
         this.setTitle("Progress");
@@ -58,7 +63,7 @@ public class SeerProgressDialog<T, V> extends JDialog {
 
         //progress panel (can be both progress and spinner)
         _progressOrSpinnerPnl = new SeerCardPanel();
-        _progressPnl = new SeerProgressPanel(0, numberOfRecords, 100, _progressText, "", "", 20, 0, 0);
+        _progressPnl = new SeerProgressPanel(0, numberToProcess, 100, _progressText, "", "", 20, 0, 0);
         JPanel progressPnl = SeerGuiUtils.createPanel();
         progressPnl.add(_progressPnl, BorderLayout.CENTER);
         _spinnerPnl = new SeerSpinningPanel(24, _spinnerText, "", "", 20, 0, 0);
@@ -67,25 +72,30 @@ public class SeerProgressDialog<T, V> extends JDialog {
         _progressOrSpinnerPnl.add(progressPnl, _PROGRESS_PANEL_ID);
         _progressOrSpinnerPnl.add(spinnerPnl, _SPINNING_PANEL_ID);
         _progressOrSpinnerPnl.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        showProgress();
+        if (spinnerText != null)
+            showSpinner();
+        else
+            showProgress();
+        add(_progressOrSpinnerPnl, BorderLayout.CENTER);
 
         //cancel button
-        JPanel cancelBtnPnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER));
-        final JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.addActionListener(e -> cancel());
-        cancelBtnPnl.add(cancelBtn);
-
-        add(_progressOrSpinnerPnl, BorderLayout.CENTER);
-        add(cancelBtnPnl, BorderLayout.SOUTH);
+        if (showCancel) {
+            JPanel cancelBtnPnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER));
+            cancelBtnPnl.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+            _cancelBtn = new JButton("Cancel");
+            _cancelBtn.addActionListener(e -> cancel());
+            cancelBtnPnl.add(_cancelBtn);
+            add(cancelBtnPnl, BorderLayout.SOUTH);
+        }
 
         // set focus on cancel button when window becomes visible
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                _spinnerPnl.startSpinning();
                 if (_worker != null)
                     _worker.execute();
-                cancelBtn.requestFocusInWindow();
+                if (_cancelBtn != null)
+                    _cancelBtn.requestFocusInWindow();
                 SeerProgressDialog.this.removeComponentListener(this);
             }
         });
