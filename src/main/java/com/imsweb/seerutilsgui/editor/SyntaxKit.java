@@ -61,7 +61,7 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
         // type
         if (SYNTAX_TYPE_PLAIN.equals(type))
             _lexer = null;
-        if (SYNTAX_TYPE_PROPERTIES.equals(type))
+        else if (SYNTAX_TYPE_PROPERTIES.equals(type))
             _lexer = new LexerProperties();
         else if (SYNTAX_TYPE_XML.equals(type))
             _lexer = new LexerXml();

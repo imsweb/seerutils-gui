@@ -1,5 +1,9 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.14**
+
+- Fixed bug preventing from using the plain syntax kit.
+
 **Changes in version 1.13**
 
 - Removed dependency to third-party libraries.
