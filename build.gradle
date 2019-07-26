@@ -20,6 +20,9 @@ repositories {
 
 // dependency jars
 dependencies {
+    testImplementation 'org.apache.commons:commons-lang3:3.7'
+    testImplementation 'com.opencsv:opencsv:4.2'
+    testImplementation 'com.imsweb:seerutils:5.5'
     testImplementation 'com.imsweb:layout:1.14'
     testImplementation 'com.imsweb:algorithms:1.16'
 }
