@@ -6,6 +6,7 @@ package com.imsweb.seerutilsgui;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,6 +18,30 @@ import javax.swing.JLabel;
  * Use this class to create a label that can be clicked.
  */
 public class SeerClickableLabel extends JLabel implements MouseListener {
+
+    /**
+     * Utility method to create an action that browse to a given internet address
+     * @param url internet address
+     * @return corresponding action
+     */
+    public static SeerClickableLabelAction createUrlAction(String url, Action action) {
+        return () -> {
+            Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+            if (desktop != null && desktop.isSupported(action)) {
+                try {
+                    if (action == Action.BROWSE)
+                        desktop.browse(URI.create(url));
+                    else if (action == Action.MAIL)
+                        desktop.mail(URI.create(url));
+                    else
+                        throw new RuntimeException("Unsupported action: " + action);
+                }
+                catch (Exception e) {
+                    // ignored
+                }
+            }
+        };
+    }
 
     // the action that needs to be executed when clicked
     private SeerClickableLabelAction _action;
@@ -109,24 +134,5 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
          * Main method for an action that needs to be executed.
          */
         void execute();
-    }
-
-    /**
-     * Utility method to create an action that browse to a given internet address
-     * @param url internet address
-     * @return corresponding action
-     */
-    public static SeerClickableLabelAction createBrowseToUrlAction(final String url) {
-        return () -> {
-            Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-            if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-                try {
-                    desktop.browse(URI.create(url));
-                }
-                catch (Exception e) {
-                    // ignored
-                }
-            }
-        };
     }
 }

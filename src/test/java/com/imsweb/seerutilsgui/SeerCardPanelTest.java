@@ -66,7 +66,7 @@ public class SeerCardPanelTest {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String currentId = myContentPnl.getCurrentPage();
+                String currentId = myContentPnl.getCurrentPageId();
                 //myIdLabel.setText(currentId);
                 myIdLabel.setText("this page is page #" + currentId);
             }

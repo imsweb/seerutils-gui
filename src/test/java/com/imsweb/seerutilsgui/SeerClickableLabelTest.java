@@ -3,6 +3,7 @@
  */
 package com.imsweb.seerutilsgui;
 
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 
@@ -22,7 +23,7 @@ public class SeerClickableLabelTest {
         JPanel contentPnl = SeerGuiUtils.createContentPanel(frame);
         contentPnl.setLayout(new GridBagLayout());
 
-        SeerClickableLabel lbl = new SeerClickableLabel("Click me and enjoy Google!", SeerClickableLabel.createBrowseToUrlAction("www.google.com"));
+        SeerClickableLabel lbl = new SeerClickableLabel("Click me and enjoy Google!", SeerClickableLabel.createUrlAction("www.google.com", Action.BROWSE));
         //SeerHelpClickableLabel lbl = new SeerHelpClickableLabel(frame, "Click me for some help!", "help", "Help", false, "<h1>HELP!!!</h1>");
 
         lbl.setEnabled(true);

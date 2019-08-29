@@ -1,5 +1,10 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.15**
+
+- Added more support for ClickableLabel.
+- Added the ability to return the current page in the SeerCardPanel class.
+
 **Changes in version 1.14**
 
 - Fixed bug preventing from using the plain syntax kit.
