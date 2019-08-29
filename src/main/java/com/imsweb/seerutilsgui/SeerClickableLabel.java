@@ -10,6 +10,7 @@ import java.awt.Desktop.Action;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.JLabel;
@@ -36,7 +37,7 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
                     else
                         throw new RuntimeException("Unsupported action: " + action);
                 }
-                catch (Exception e) {
+                catch (IOException e) {
                     // ignored
                 }
             }
