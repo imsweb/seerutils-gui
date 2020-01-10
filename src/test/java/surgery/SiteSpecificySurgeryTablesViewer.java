@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -53,12 +54,10 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
     private SeerList<String> _titleList;
     private JSplitPane _pane;
 
-    public SiteSpecificySurgeryTablesViewer() throws IOException {
+    public SiteSpecificySurgeryTablesViewer() {
         JPanel contentPnl = SeerGuiUtils.createContentPanel(this, 5);
 
-        SiteSpecificSurgeryUtils.registerInstance(SiteSpecificSurgeryUtils.readSiteSpecificSurgeryData(Thread.currentThread().getContextClassLoader().getResourceAsStream("tmp-surgery-tables.xml")));
-
-        List<String> allTitles = SiteSpecificSurgeryUtils.getInstance().getAllTableTitles();
+        List<String> allTitles = SiteSpecificSurgeryUtils.getInstance().getTables(2020).getTables().stream().map(SurgeryTableDto::getTitle).collect(Collectors.toList());
 
         // WEST - list of tables
         JPanel westPnl = SeerGuiUtils.createPanel();
@@ -68,8 +67,8 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
         _titleList.addListSelectionListener(e -> {
             String selectedTitle = (String)_titleList.getSelectedValue();
             if (selectedTitle != null) {
-                _pane.setLeftComponent(createTablePanel(SiteSpecificSurgeryUtils.getInstance().getTable(selectedTitle)));
-                _pane.setRightComponent(buildDetailsPanel(SiteSpecificSurgeryUtils.getInstance().getTable(selectedTitle)));
+                _pane.setLeftComponent(createTablePanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, selectedTitle)));
+                _pane.setRightComponent(buildDetailsPanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, selectedTitle)));
                 _pane.setDividerLocation(0.75);
             }
         });
@@ -87,8 +86,8 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
             ((BasicSplitPaneUI)_pane.getUI()).getDivider().setBorder(null);
             ((BasicSplitPaneUI)_pane.getUI()).getDivider().setBackground(SeerGuiUtils.COLOR_APPLICATION_BACKGROUND);
         }
-        _pane.setLeftComponent(createTablePanel(SiteSpecificSurgeryUtils.getInstance().getTable(allTitles.get(0))));
-        _pane.setRightComponent(buildDetailsPanel(SiteSpecificSurgeryUtils.getInstance().getTable(allTitles.get(0))));
+        _pane.setLeftComponent(createTablePanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, allTitles.get(0))));
+        _pane.setRightComponent(buildDetailsPanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, allTitles.get(0))));
         centerPnl.add(_pane, BorderLayout.CENTER);
         contentPnl.add(centerPnl, BorderLayout.CENTER);
 
@@ -199,7 +198,7 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
         return detailsPnl;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
         SiteSpecificySurgeryTablesViewer viewer = new SiteSpecificySurgeryTablesViewer();
@@ -264,13 +263,8 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
         }
 
         private void addSize(JTable table, int row, int column, int height) {
-            Map<Integer, Map<Integer, Integer>> rows = _cellSizes.get(table);
-            if (rows == null)
-                _cellSizes.put(table, rows = new HashMap<>());
-            Map<Integer, Integer> rowheights = rows.get(row);
-            if (rowheights == null)
-                rows.put(row, rowheights = new HashMap<>());
-            rowheights.put(column, height);
+            Map<Integer, Map<Integer, Integer>> rows = _cellSizes.computeIfAbsent(table, k -> new HashMap<>());
+            rows.computeIfAbsent(row, k -> new HashMap<>()).put(column, height);
         }
 
         private int findTotalMaximumRowSize(JTable table, int row) {
