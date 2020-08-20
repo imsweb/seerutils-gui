@@ -28,7 +28,7 @@ public class SeerHelpButtonTest {
         frame.getContentPane().add(contentPnl, BorderLayout.CENTER);
 
         contentPnl.setLayout(new GridBagLayout());
-        JButton btn = new SeerHelpButton(frame, contentPnl, "test", "Test", false, "This is <b>just</b> a test!!!");
+        JButton btn = new SeerHelpButton(frame, contentPnl, "test", "Test", false, "This is <b>just</b> a test - <a href=\"https://www.squishlist.com/ims/seerdms_dev/\">Squish</a>!!!");
         //btn.setEnabled(false);
         contentPnl.add(btn);
         SeerGuiUtils.showAndPosition(frame, null);

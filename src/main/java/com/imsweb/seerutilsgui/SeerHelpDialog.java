@@ -5,6 +5,8 @@ package com.imsweb.seerutilsgui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -22,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -42,12 +45,13 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.text.html.StyleSheet;
 
+@SuppressWarnings("unused")
 public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
 
     /**
      * Owner
      */
-    private Window _owner;
+    private final Window _owner;
 
     /**
      * Whether or not the mouse is on the button
@@ -68,9 +72,10 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
     /**
      * Global GUI components
      */
-    private JPanel _contentPnl, _disclaimerPnl;
-    private JEditorPane _pane;
-    private JScrollPane _scrollPane;
+    private final JPanel _contentPnl;
+    private JPanel _disclaimerPnl;
+    private final JEditorPane _pane;
+    private final JScrollPane _scrollPane;
 
     /**
      * Default constructor, used internally.
@@ -175,6 +180,20 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
      */
     protected SeerHelpDialog(Window owner, final String dlgId, final String title, final Image icon, final String content, boolean decorated, Dimension dim) {
         this(owner, dlgId, title, icon);
+
+        _pane.addHyperlinkListener(e -> {
+            if (e.getEventType() == EventType.ACTIVATED) {
+                if (e.getURL() != null && e.getURL().getProtocol() != null && e.getURL().getProtocol().startsWith("http")) {
+                    try {
+                        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE))
+                            Desktop.getDesktop().browse(e.getURL().toURI());
+                    }
+                    catch (IOException | URISyntaxException ex) {
+                        // ignore exception
+                    }
+                }
+            }
+        });
 
         // if the window is not decorated, do a few extra things...
         if (!decorated) {

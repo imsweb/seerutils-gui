@@ -1,5 +1,9 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.17**
+
+- Added ability to browse to a website from the help dialog.
+
 **Changes in version 1.16**
 
 - Added a tooltip to help buttons, as required for 508-compliance.
