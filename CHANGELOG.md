@@ -1,5 +1,9 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.16**
+
+- Added a tooltip to help buttons, as required for 508-compliance.
+
 **Changes in version 1.15**
 
 - Added more support for ClickableLabel.

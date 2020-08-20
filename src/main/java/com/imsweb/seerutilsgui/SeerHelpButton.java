@@ -100,7 +100,7 @@ public class SeerHelpButton extends JButton {
         this.setOpaque(false);
         this.setActionCommand("display-help");
         this.setName("display-help-btn");
-        this.setToolTipText(null); // the help dialog already behave like a tooltip, having both is just weird
+        this.setToolTipText("Contextual help (click to see help content)");
         this.setIcon(icon);
         this.setContentAreaFilled(false);
         this.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
