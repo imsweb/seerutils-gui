@@ -18,7 +18,7 @@ import javax.swing.JProgressBar;
 public class SeerProgressPanel extends JPanel {
 
     private JLabel _topLbl, _firstBottomLbl, _secondBottomLbl;
-    private JProgressBar _progressBar;
+    private final JProgressBar _progressBar;
 
     public SeerProgressPanel(int min, int max, int size, String topLbl, String bottomLbl1, String bottomLbl2) {
         this(min, max, size, topLbl, bottomLbl1, bottomLbl2, 20, 20, 10);
@@ -44,8 +44,14 @@ public class SeerProgressPanel extends JPanel {
         JPanel spinPnl = SeerGuiUtils.createPanel();
         spinPnl.setBorder(BorderFactory.createEmptyBorder());
         spinPnl.setPreferredSize(new Dimension(size, size));
-        _progressBar = new JProgressBar(min, max);
-        _progressBar.setValue(min);
+        _progressBar = new JProgressBar();
+        if (max != -1) {
+            _progressBar.setMinimum(min);
+            _progressBar.setMaximum(max);
+            _progressBar.setValue(min);
+        }
+        else
+            _progressBar.setIndeterminate(true);
         _progressBar.setStringPainted(false);
         searchPnl.add(_progressBar);
 

@@ -2,6 +2,7 @@
 
 **Changes in version 1.17**
 
+- Added support for undetermined progress bar in SeerProgressPanel.
 - Added ability to browse to a website from the help dialog.
 
 **Changes in version 1.16**
