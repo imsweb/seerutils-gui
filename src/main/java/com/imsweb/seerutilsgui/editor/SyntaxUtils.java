@@ -198,9 +198,11 @@ public class SyntaxUtils {
      */
     public static int getColumnNumber(JTextComponent component, int pos) {
         try {
+            // this will be fixed when the project stops supporting Java 8...
             Rectangle r = component.modelToView(pos);
             if (r == null)
                 return 0;
+            // this will be fixed when the project stops supporting Java 8...
             return pos - component.viewToModel(new Point(0, r.y));
         }
         catch (BadLocationException ex) {

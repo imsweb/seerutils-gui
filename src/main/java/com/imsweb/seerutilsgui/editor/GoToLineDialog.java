@@ -28,11 +28,11 @@ import com.imsweb.seerutilsgui.SeerWindow;
 
 public class GoToLineDialog extends JDialog implements ActionListener, SeerWindow {
 
-    private JTextComponent _comp;
+    private final JTextComponent _comp;
 
-    private int _maxLineNum;
+    private final int _maxLineNum;
 
-    private JTextField _field;
+    private final JTextField _field;
 
     private String _previousValue;
 
@@ -128,6 +128,7 @@ public class GoToLineDialog extends JDialog implements ActionListener, SeerWindo
         try {
             int start = SyntaxUtils.getSyntaxDocument(_comp).getStartOfLineFromLineNumber(line - 1);
             _comp.setCaretPosition(start);
+            // this will be fixed when the project stops supporting Java 8...
             Rectangle rect = _comp.modelToView(start);
             _comp.scrollRectToVisible(rect);
         }

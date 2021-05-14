@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -50,11 +51,11 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
     /**
      * Global GUI components
      */
-    private JComboBox _searchBox, _replaceBox;
-    private JCheckBox _caseBox, _wrapBox, _regexBox;
-    private JRadioButton _allBtn, _selectedBtn;
-    private JButton _findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, _countBtn, _closeBtn;
-    private JLabel _statusLbl;
+    private final JComboBox _searchBox, _replaceBox;
+    private final JCheckBox _caseBox, _wrapBox, _regexBox;
+    private final JRadioButton _allBtn, _selectedBtn;
+    private final JButton _findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, _countBtn, _closeBtn;
+    private final JLabel _statusLbl;
 
     /**
      * Pattern to search for
@@ -69,25 +70,42 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
     /**
      * Marker
      */
-    private SyntaxUtils.SimpleMarker _marker = new SyntaxUtils.SimpleMarker(Color.LIGHT_GRAY);
+    private final SyntaxUtils.SimpleMarker _marker = new SyntaxUtils.SimpleMarker(Color.LIGHT_GRAY);
 
     /**
      * Constructor.
      * <p/>
      * Created on Apr 23, 2010 by Fabian
      */
-    public SearchDialog() {
-        this(SeerGuiUtils.COLOR_APPLICATION_BACKGROUND);
+    public SearchDialog(Window owner) {
+        this(owner, SeerGuiUtils.COLOR_APPLICATION_BACKGROUND);
     }
 
     /**
      * Constructor.
      * <p/>
      * Created on Apr 23, 2010 by Fabian
-     * @param backgroundColor background color
      */
-    public SearchDialog(Color backgroundColor) {
-        super();
+    public SearchDialog(Window owner, JTextComponent textComponent) {
+        this(owner, textComponent, SeerGuiUtils.COLOR_APPLICATION_BACKGROUND);
+    }
+
+    /**
+     * Constructor.
+     * <p/>
+     * Created on Apr 23, 2010 by Fabian
+     */
+    public SearchDialog(Window owner, Color backgroundColor) {
+        this(owner, null, backgroundColor);
+    }
+
+    /**
+     * Constructor.
+     * <p/>
+     * Created on Apr 23, 2010 by Fabian
+     */
+    public SearchDialog(Window owner, JTextComponent textComponent, Color backgroundColor) {
+        super(owner);
 
         this.setTitle("Search");
         this.setModal(false);
@@ -212,36 +230,38 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         // SOUTH - controls
         JPanel controlsPnl = SeerGuiUtils.createPanel();
         controlsPnl.setLayout(new BoxLayout(controlsPnl, BoxLayout.Y_AXIS));
-        controlsPnl.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        controlsPnl.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        JPanel controls1Pnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER, 0, 2));
+        JPanel controls1Pnl = SeerGuiUtils.createPanel();
         _findBtn = SeerGuiUtils.createButton("Find", "find", "Find", this);
         _findBtn.addKeyListener(keyAdapter);
-        controls1Pnl.add(_findBtn);
-        controls1Pnl.add(Box.createHorizontalStrut(25));
-        _replaceFindBtn = SeerGuiUtils.createButton("Replace/Find", "replace-find", "Replace & Find", this);
+        controls1Pnl.add(_findBtn, BorderLayout.WEST);
+        controls1Pnl.add(SeerGuiUtils.createPanel(), BorderLayout.CENTER);
+        _replaceFindBtn = SeerGuiUtils.createButton("    Replace/Find    ", "replace-find", "Replace & Find", this);
         _replaceFindBtn.addKeyListener(keyAdapter);
-        controls1Pnl.add(_replaceFindBtn);
+        controls1Pnl.add(_replaceFindBtn, BorderLayout.EAST);
         controlsPnl.add(controls1Pnl);
+        controlsPnl.add(Box.createVerticalStrut(5));
 
-        JPanel controls2Pnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER, 0, 2));
+        JPanel controls2Pnl = SeerGuiUtils.createPanel();
         _replaceBtn = SeerGuiUtils.createButton("Replace", "replace", "Replace", this);
         _replaceBtn.addKeyListener(keyAdapter);
-        controls2Pnl.add(_replaceBtn);
-        controls2Pnl.add(Box.createHorizontalStrut(25));
+        controls2Pnl.add(_replaceBtn, BorderLayout.WEST);
+        controls2Pnl.add(SeerGuiUtils.createPanel(), BorderLayout.CENTER);
         _replaceAllBtn = SeerGuiUtils.createButton("Replace All", "replace-all", "Replace All", this);
         _replaceAllBtn.addKeyListener(keyAdapter);
-        controls2Pnl.add(_replaceAllBtn);
+        controls2Pnl.add(_replaceAllBtn, BorderLayout.EAST);
         controlsPnl.add(controls2Pnl);
+        controlsPnl.add(Box.createVerticalStrut(5));
 
-        JPanel controls3Pnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER, 0, 2));
+        JPanel controls3Pnl = SeerGuiUtils.createPanel();
         _countBtn = SeerGuiUtils.createButton("Count", "count", "Count", this);
         _countBtn.addKeyListener(keyAdapter);
-        controls3Pnl.add(_countBtn);
-        controls3Pnl.add(Box.createHorizontalStrut(25));
+        controls3Pnl.add(_countBtn, BorderLayout.WEST);
+        controls3Pnl.add(SeerGuiUtils.createPanel(), BorderLayout.CENTER);
         _closeBtn = SeerGuiUtils.createButton("Close", "close", "Close", this);
         _closeBtn.addKeyListener(keyAdapter);
-        controls3Pnl.add(_closeBtn);
+        controls3Pnl.add(_closeBtn, BorderLayout.EAST);
         controlsPnl.add(controls3Pnl);
 
         SeerGuiUtils.synchronizedComponentsWidth(_findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, _countBtn, _closeBtn);
@@ -256,6 +276,9 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(contentPnl, BorderLayout.CENTER);
 
+        if (textComponent != null)
+            setTextComponent(textComponent);
+
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -267,6 +290,11 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
 
     public void setTextComponent(JTextComponent comp) {
         _comp = comp;
+
+        _replaceBox.setEnabled(_comp.isEditable());
+        _replaceBtn.setEnabled(_comp.isEditable());
+        _replaceAllBtn.setEnabled(_comp.isEditable());
+        _replaceFindBtn.setEnabled(_comp.isEditable());
     }
 
     public void reApplyFocus() {
