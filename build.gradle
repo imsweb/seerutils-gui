@@ -20,11 +20,11 @@ repositories {
 
 // dependency jars
 dependencies {
-    testImplementation 'org.apache.commons:commons-lang3:3.9'
-    testImplementation 'com.opencsv:opencsv:5.2'
+    testImplementation 'org.apache.commons:commons-lang3:3.11'
+    testImplementation 'com.opencsv:opencsv:5.4'
     testImplementation 'com.imsweb:seerutils:5.6'
-    testImplementation 'com.imsweb:layout:3.0'
-    testImplementation 'com.imsweb:algorithms:2.18'
+    testImplementation 'com.imsweb:layout:3.3'
+    testImplementation 'com.imsweb:algorithms:3.3'
 }
 
 // enforce UTF-8, display the compilation warnings
