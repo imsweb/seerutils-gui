@@ -1,6 +1,6 @@
 ## SEER*Utils GUI Version History
 
-**Changes in version 1.17**
+**Changes in version 1.18**
 
 - Improved search dialog.
 
