@@ -1,9 +1,10 @@
 plugins {
     id 'java-library'
     id 'checkstyle'
-    id 'com.github.spotbugs' version '4.5.1'
-    id 'com.bmuschko.nexus' version '2.3.1'
-    id 'io.codearte.nexus-staging' version '0.21.2'
+    id 'com.github.spotbugs' version '4.7.6'
+    id 'maven-publish'
+    id 'signing'
+    id "io.codearte.nexus-staging" version '0.30.0'
 }
 
 group = 'com.imsweb'
@@ -20,11 +21,11 @@ repositories {
 
 // dependency jars
 dependencies {
-    testImplementation 'org.apache.commons:commons-lang3:3.11'
-    testImplementation 'com.opencsv:opencsv:5.4'
+    testImplementation 'org.apache.commons:commons-lang3:3.12.0'
+    testImplementation 'com.opencsv:opencsv:5.5.2'
     testImplementation 'com.imsweb:seerutils:5.6'
-    testImplementation 'com.imsweb:layout:3.3'
-    testImplementation 'com.imsweb:algorithms:3.3'
+    testImplementation 'com.imsweb:layout:4.6'
+    testImplementation 'com.imsweb:algorithms:3.7'
 }
 
 // enforce UTF-8, display the compilation warnings
@@ -36,6 +37,12 @@ tasks.withType(JavaCompile) {
 // the Javadoc was made way too strict in Java 8 and it's not worth the time fixing everything!
 tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+// generate javadoc and sources (required by Nexus)
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 // customize the manifest
@@ -73,35 +80,71 @@ nexusStaging {
 }
 
 // needed to deploy to Maven Central
-modifyPom {
-    project {
-        name 'SEER*Utils GUI'
-        description 'Shared Swing library for the SEER Java projects.'
-        url 'https://github.com/imsweb/seerutils-gui'
-        inceptionYear '2018'
-
-        scm {
-            url 'https://github.com/imsweb/seerutils-gui'
-            connection 'scm:https://github.com/imsweb/seerutils-gui.git'
-            developerConnection 'scm:git@github.com:imsweb/seerutils-gui.git'
-        }
-
-        licenses {
-            license {
-                name 'A modified BSD License (BSD)'
-                url 'https://github.com/imsweb/seerutils-gui/blob/master/LICENSE'
-                distribution 'repo'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'seerutils-gui'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
             }
-        }
+            pom {
+                name = 'SEER*Utils GUI'
+                description = 'Shared Swing library for the SEER Java projects.'
+                url = 'https://github.com/imsweb/seerutils-gui'
+                inceptionYear = '2018'
 
-        developers {
-            developer {
-                id 'depryf'
-                name 'Fabian Depry'
-                email 'depryf@imsweb.com'
+                licenses {
+                    license {
+                        name = 'A modified BSD License (BSD)'
+                        url = 'https://github.com/imsweb/seerutils-gui/blob/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'depryf'
+                        name = 'Fabian Depry'
+                        email = 'depryf@imsweb.com'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/imsweb/seerutils-gui'
+                    connection = 'scm:https://github.com/imsweb/seerutils-gui.git'
+                    developerConnection = 'scm:git@github.com:imsweb/seerutils-gui.git'
+                }
             }
         }
     }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = project.findProperty('nexusUsername') ?: ''
+                password = project.findProperty('nexusPassword') ?: ''
+            }
+        }
+    }
+}
+
+// setup JAR signing
+signing {
+    def signingKey = project.findProperty('signing.armored.key') ?: ''
+    def signingPassword = project.findProperty('signing.armored.password') ?: ''
+
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
 }
 
 // don't try to release a snapshot to a non-snapshot repository, that won't work anyway
@@ -110,7 +153,7 @@ if (version.endsWith('-SNAPSHOT'))
 
 // Gradle wrapper, this allows to build the project without having to install Gradle!
 wrapper {
-    gradleVersion = '6.7'
+    gradleVersion = '7.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
