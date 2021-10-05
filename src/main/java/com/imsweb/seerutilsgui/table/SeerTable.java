@@ -670,7 +670,7 @@ public class SeerTable extends JTable {
             if (dto.getVisible()) {
                 if (dto.getWidth() == SeerColumnWidthType.FIXED && dto.getFixedSize() != null && dto.getFixedSize() > 0)
                     totalRequiredWith += dto.getFixedSize();
-                else if (dto.getWidth() == SeerColumnWidthType.MIN && dto.getContentType() == String.class) {
+                else if (dto.getWidth() == SeerColumnWidthType.MIN) {
                     int w = 0;
 
                     // if  the column has a lookup, set the size according to its lookup
@@ -691,9 +691,9 @@ public class SeerTable extends JTable {
                         }
                         w = size;
                     }
-                    else { // go through the 100th first non null values and calculate the max size
+                    else { // go through the first X values and calculate the max size
                         SeerTableModel model = (SeerTableModel)getModel();
-                        for (int i = 0; i < 500 && i < model.getRowCount(); i++) {
+                        for (int i = 0; i < getNumRowsToEvaluateForWidthComputation() && i < model.getRowCount(); i++) {
                             Object val = model.getValueAt(i, col);
                             if (val != null)
                                 w = Math.max(w, SeerTableStringRenderer.getValueWidth(val.toString(), g));
@@ -727,6 +727,10 @@ public class SeerTable extends JTable {
                     col.setPreferredWidth(dataDrivenSizes.getOrDefault(dto, freeSize));
             }
         }
+    }
+
+    protected int getNumRowsToEvaluateForWidthComputation() {
+        return 500;
     }
 
     /**
