@@ -52,10 +52,10 @@ public class SeerBoldTitlesTabbedPaneTest {
         pane.setHeaderBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
         pane.addPage("TAB 1", new TestPage(pane, 1));
         pane.addPage("TAB 2", new TestPage(pane, 1), 1);
-        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 3", 1), new TestPage(pane, 3));
-        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 4", 2, SeerGuiUtils.createIcon("watermelon.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), false), new TestPage(pane, 4));
-        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 5", 3, SeerGuiUtils.createIcon("strawberry.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), true, true), new TestPage(pane, 5));
-        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 6 a really long title", 4, SeerGuiUtils.createIcon("grape.jpg")), new TestPage(pane, 6), 1);
+        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 3"), new TestPage(pane, 3));
+        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 4", SeerGuiUtils.createIcon("watermelon.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), false), new TestPage(pane, 4));
+        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 5", SeerGuiUtils.createIcon("strawberry.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), true, true), new TestPage(pane, 5));
+        pane.addPage(new SeerBoldTitlesTabbedPaneHeader("TAB 6 a really long title", SeerGuiUtils.createIcon("grape.jpg")), new TestPage(pane, 6), 1);
 
         final SeerBoldTitlesTabbedPane panePage = new SeerBoldTitlesTabbedPane();
         panePage.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
@@ -63,7 +63,7 @@ public class SeerBoldTitlesTabbedPaneTest {
         testPage.add(SeerGuiUtils.createLabel("<html>Use get page to fetch a page from the top panel to this one. <br/>" + "Once Fetched, the page cannot be added back</html>", Font.BOLD, 22,
                 Color.ORANGE));
         testPage.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        panePage.addPage(new SeerBoldTitlesTabbedPaneHeader("Info", 2, SeerGuiUtils.createIcon("watermelon.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), false), testPage);
+        panePage.addPage(new SeerBoldTitlesTabbedPaneHeader("Info", SeerGuiUtils.createIcon("watermelon.jpg"), BorderFactory.createEmptyBorder(2, 4, 2, 4), false), testPage);
 
         //LEFT: ctrl panel
         JPanel ctrlPnl = SeerGuiUtils.createPanel(new GridLayout(7, 1));
@@ -405,6 +405,8 @@ public class SeerBoldTitlesTabbedPaneTest {
 
     private static class TestPage extends SeerBoldTitlesTabbedPanePage {
 
+        private int _idx;
+
         public TestPage(SeerBoldTitlesTabbedPane parent, int idx) {
             super(parent);
             this.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -423,6 +425,12 @@ public class SeerBoldTitlesTabbedPaneTest {
                     "When removed by Name, only that one tab will be removed.<br/>" +
                     "2. get page by name method: getPage(String name)seems not working" +
                     "3.</html>", Font.PLAIN, 16, Color.RED), BorderLayout.SOUTH);
+
+            _idx = idx;
+        }
+
+        public int getIdx() {
+            return _idx;
         }
     }
 }

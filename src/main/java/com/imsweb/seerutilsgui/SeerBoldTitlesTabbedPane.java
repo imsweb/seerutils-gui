@@ -25,6 +25,9 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
     // the border to use for the headers (default to a small empty border)
     protected Border _titleBorder;
 
+    // the font to use for the headers (default to system font)
+    protected Font _headerFont;
+
     // the current tab that is being displayed
     protected int _currentTabIndex;
 
@@ -50,6 +53,7 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
         _synchronizeHeaderWidth = false;
         _centerTitles = true;
         _titleBorder = BorderFactory.createEmptyBorder(2, 4, 2, 4);
+        _headerFont = null;
 
         this.addChangeListener(e -> {
             if (isVisible()) {
@@ -93,6 +97,10 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
         _titleBorder = titleBorder;
     }
 
+    public void setHeaderFont(Font font) {
+        _headerFont = font;
+    }
+
     public void addPage(SeerBoldTitlesTabbedPaneHeader header, Component page) {
         addPage(header, null, page, getTabCount());
     }
@@ -112,7 +120,7 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
     protected void addPage(SeerBoldTitlesTabbedPaneHeader header, String title, Component page, int idx) {
 
         if (header == null)
-            header = new SeerBoldTitlesTabbedPaneHeader(title, idx, null, _titleBorder, _centerTitles, getTabCount() == 0);
+            header = new SeerBoldTitlesTabbedPaneHeader(title, null, _titleBorder, _headerFont, _centerTitles, getTabCount() == 0);
         if (title == null)
             title = header.getHeaderTitle();
 

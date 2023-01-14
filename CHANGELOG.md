@@ -1,5 +1,9 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.20**
+
+- Added ability to provide a font for the specialized tabbed pane.
+
 **Changes in version 1.19**
 
 - Fixed minor bug in SeerTable preventing the use of min-width columns with customized column types.

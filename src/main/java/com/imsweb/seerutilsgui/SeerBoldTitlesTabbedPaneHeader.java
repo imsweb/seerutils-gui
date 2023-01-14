@@ -17,19 +17,23 @@ public class SeerBoldTitlesTabbedPaneHeader extends JPanel {
 
     protected JLabel _tabHeaderLbl, _iconLbl;
 
-    public SeerBoldTitlesTabbedPaneHeader(String label, int idx) {
-        this(label, idx, null, BorderFactory.createEmptyBorder(2, 4, 2, 4), false, false);
+    public SeerBoldTitlesTabbedPaneHeader(String label) {
+        this(label, null, BorderFactory.createEmptyBorder(2, 4, 2, 4), false, false);
     }
 
-    public SeerBoldTitlesTabbedPaneHeader(String label, int idx, ImageIcon icon) {
-        this(label, idx, icon, BorderFactory.createEmptyBorder(2, 4, 2, 4), false, false);
+    public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon) {
+        this(label, icon, BorderFactory.createEmptyBorder(2, 4, 2, 4), false, false);
     }
 
-    public SeerBoldTitlesTabbedPaneHeader(String label, int idx, ImageIcon icon, Border titleBorder, boolean centerTitle) {
-        this(label, idx, icon, titleBorder, centerTitle, false);
+    public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon, Border titleBorder, boolean centerTitle) {
+        this(label, icon, titleBorder, centerTitle, false);
     }
 
-    public SeerBoldTitlesTabbedPaneHeader(String label, int idx, ImageIcon icon, Border titleBorder, boolean centerTitle, boolean makeCurrent) {
+    public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon, Border titleBorder, boolean centerTitle, boolean makeCurrent) {
+        this(label, icon, titleBorder, null, centerTitle, makeCurrent);
+    }
+
+    public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon, Border titleBorder, Font headerFont, boolean centerTitle, boolean makeCurrent) {
         this.setLayout(new FlowLayout(centerTitle ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0));
         this.setOpaque(false);
         if (titleBorder != null)
@@ -42,6 +46,8 @@ public class SeerBoldTitlesTabbedPaneHeader extends JPanel {
         }
 
         _tabHeaderLbl = SeerGuiUtils.createLabel(label);
+        if (headerFont != null)
+            _tabHeaderLbl.setFont(headerFont);
         this.add(_tabHeaderLbl);
 
         if (makeCurrent)
