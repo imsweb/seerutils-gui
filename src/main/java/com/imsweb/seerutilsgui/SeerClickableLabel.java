@@ -45,7 +45,7 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
     }
 
     // the action that needs to be executed when clicked
-    private SeerClickableLabelAction _action;
+    private transient SeerClickableLabelAction _action;
 
     // the current state of the label
     private boolean _underlined;
@@ -70,8 +70,9 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
         _underlined = false;
 
         this.setForeground(Color.BLUE);
+        this.setFont(SeerGuiUtils.adjustFontSize(this.getFont()));
 
-        // this class is it's own listener...
+        // this class is its own listener...
         this.addMouseListener(this);
     }
 
@@ -109,10 +110,12 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        // nothing by default
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        // nothing by default
     }
 
     @Override

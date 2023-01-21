@@ -54,7 +54,7 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
     private final Window _owner;
 
     /**
-     * Whether or not the mouse is on the button
+     * Whether the mouse is on the button
      */
     private boolean _mouseOnButton;
 
@@ -121,8 +121,10 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
             }
         });
 
-        // let's set the base URL to the icons folder, that way images can very easily be added without any prefix
+        // let's set the base URL to the icon folder, that way images can very easily be added without any prefix
         ((HTMLDocument)_pane.getDocument()).setBase(Thread.currentThread().getContextClassLoader().getResource("icons/"));
+
+        // TODO FD not sure how to handle the FONT DELTA on this one...
 
         _pane.setEditable(false);
         _pane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
@@ -218,6 +220,7 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
             _focusListener = new FocusListener() {
                 @Override
                 public void focusGained(FocusEvent e) {
+                    // nothing to do
                 }
 
                 @Override

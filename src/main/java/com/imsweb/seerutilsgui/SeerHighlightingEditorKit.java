@@ -30,17 +30,19 @@ import javax.swing.text.WrappedPlainView;
  * Created on Nov 17, 2010 by depryf
  * @author depryf
  */
+@SuppressWarnings("unused")
 public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFactory {
 
     /**
      * Highlighting information
      */
-    protected List<List<Integer>> _highlighting;
+    protected transient List<List<Integer>> _highlighting;
 
     /**
      * Highlighting color
      */
-    protected Color _highlightingColor, _foregroundColor;
+    protected Color _highlightingColor;
+    protected Color _foregroundColor;
 
     protected Font _font;
 
@@ -98,7 +100,8 @@ public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFa
 
                 Document doc = getDocument();
                 Segment segment = getLineBuffer();
-                int ret = x, currentPos = p0;
+                int ret = x;
+                int currentPos = p0;
 
                 // this is the tricky part; we have to split what needs to be drawn according to the requested highlighting (I am calling gaps the areas that need to be highlighted)
                 int nextGapIndex = getNextGapIndex(p0, p1, 0);
@@ -145,7 +148,8 @@ public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFa
 
                 for (int i = indexOffset; i < _highlighting.size(); i++) {
                     List<Integer> gap = _highlighting.get(i);
-                    int gapStart = gap.get(0), gapEnd = gap.get(1);
+                    int gapStart = gap.get(0);
+                    int gapEnd = gap.get(1);
                     if ((gapStart >= start && gapStart <= end) || (gapEnd >= start && gapEnd <= end)) {
                         result = i;
                         break;
@@ -156,8 +160,8 @@ public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFa
             }
 
             /**
-             * I have no idea why I need to do this trick, but if I don't Swing doesn't render the anti-aliasing and the text looks crappy; I found the fix here:
-             *     http://netbeans.sourcearchive.com/documentation/6.1-0ubuntu1/ExtPlainView_8java-source.html) 
+             * no sure why I need to do this trick, but if I don't Swing doesn't render the anti-aliasing and the text looks bad; I found the fix here:
+             *     <a href="http://netbeans.sourcearchive.com/documentation/6.1-0ubuntu1/ExtPlainView_8java-source.html">link</a>)
              */
             @SuppressWarnings("unchecked")
             private Map<Object, Object> getHints() {

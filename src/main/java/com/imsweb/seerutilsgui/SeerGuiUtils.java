@@ -25,14 +25,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -46,29 +45,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
+import javax.swing.RootPaneContainer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
+// TODO FD still have the SeerSpinner to do
+// TODO FD I added SeerComboBox; I think there was something about clickableLabel that I wanted to add from File*Pro...
+// TODO FD not sure how to fix SeerHelpDialog (HTML)
+// TODO SeerProgressDialog not sure, doesn't look like it's working
+
 /**
  * Generic GUI utility class for the SEER projects.
  */
-@SuppressWarnings("MagicConstant")
+@SuppressWarnings("unused")
 public final class SeerGuiUtils {
-
-    public static final String KEY_VERSION = "build.version";
-    public static final String KEY_COMMIT_ID = "commit.id";
-    public static final String KEY_COMMIT_MESSAGE = "commit.message";
-
-    /**
-     * Cached build properties for this project
-     */
-    private static Map<String, String> _BUILD_PROPS = new HashMap<>();
-
-    // initialize all the build property files into the shared _BUILD_PROPS map
-    static {
-        addBuildProperties("seerutils-gui-build.properties");
-    }
 
     /**
      * A few color constants
@@ -88,12 +79,17 @@ public final class SeerGuiUtils {
     /**
      * Cached windows
      */
-    private static Map<String, SeerUniqueWindow> _CACHED_WINDOWS = new HashMap<>();
+    private static final Map<String, SeerUniqueWindow> _CACHED_WINDOWS = new HashMap<>();
 
     /**
      * Cached windows size and location
      */
-    private static Map<String, String> _WINDOWS_INFO = new HashMap<>();
+    private static final Map<String, String> _WINDOWS_INFO = new HashMap<>();
+
+    /**
+     * Global font delta; if set, it will be applied to any component (JLabel, JTextField, JComboBox, JRadioButton, etc...) created by this class
+     */
+    private static int _FONT_DELTA = 0;
 
     /**
      * Private constructor, no instanciation!
@@ -101,46 +97,32 @@ public final class SeerGuiUtils {
      * Created on Jan 30, 2010 by Fabian
      */
     private SeerGuiUtils() {
+        // utility class
     }
 
     /**
-     * Adds the passed resource to the static map of build properties
-     * <p/>
-     * @param resource resource to add
+     * Sets the font delta for this class; it will be applied to any component (JLabel, JTextField, JComboBox, JRadioButton, etc...) created by this class.
+     * <br/><br/>
+     * Setting the delta will have a very global impact; it should be done once on startup, before any GUI is created.
+     * @param delta delta to set (can be negative or positive); no check is done on the actual value...
      */
-    private static void addBuildProperties(String resource) {
-        Properties props = new Properties();
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        if (is != null) {
-            try {
-                props.load(is);
-                is.close();
-            }
-            catch (IOException e1) {
-                props.clear();
-            }
-        }
-
-        for (Map.Entry<Object, Object> entry : props.entrySet())
-            _BUILD_PROPS.put((String)entry.getKey(), (String)entry.getValue());
+    public static void setFontDelta(int delta) {
+        _FONT_DELTA = delta;
     }
 
     /**
-     * Returns the requested build property for the SEER*Utils library.
-     * <p/>
-     * Created on Feb 8, 2011 by depryf
-     * @return a <code>Map</code> containing all the build properties
+     * Adjust the provided font based on the font delta currently set for this class
+     * @param font font to adjust
+     * @return adjusted font
      */
-    public static String getBuildProperty(String prop) {
-        return _BUILD_PROPS.get(prop);
-    }
+    public static Font adjustFontSize(Font font) {
+        if (font == null)
+            return null;
 
-    /**
-     * Returns the current version of the SEER*Utils library.
-     * @return the current version of the SEER*Utils library
-     */
-    public static String getBuildVersion() {
-        return getBuildProperty(KEY_VERSION);
+        if (_FONT_DELTA == 0)
+            return font;
+
+        return font.deriveFont((float)(font.getSize() + _FONT_DELTA));
     }
 
     /**
@@ -542,8 +524,8 @@ public final class SeerGuiUtils {
     }
 
     public static ImageIcon createIcon(String icon, String path) {
-        return new ImageIcon(Thread.currentThread().getContextClassLoader().getResource(path + icon));
-        //return new ImageIcon(path + icon);
+        URL url = Thread.currentThread().getContextClassLoader().getResource(path + icon);
+        return url == null ? null : new ImageIcon(url);
     }
 
     public static JPanel createPanel() {
@@ -557,31 +539,17 @@ public final class SeerGuiUtils {
         return panel;
     }
 
-    public static JPanel createContentPanel(JFrame frame) {
-        return createContentPanel(frame, 10);
+    public static JPanel createContentPanel(RootPaneContainer parent) {
+        return createContentPanel(parent, 10);
     }
 
-    public static JPanel createContentPanel(JFrame frame, int border) {
+    public static JPanel createContentPanel(RootPaneContainer parent, int border) {
         JPanel contentPnl = createPanel();
         contentPnl.setOpaque(true);
         contentPnl.setBackground(COLOR_APPLICATION_BACKGROUND);
         contentPnl.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(contentPnl, BorderLayout.CENTER);
-        return contentPnl;
-    }
-
-    public static JPanel createContentPanel(JDialog dlg) {
-        return createContentPanel(dlg, 10);
-    }
-
-    public static JPanel createContentPanel(JDialog dlg, int border) {
-        JPanel contentPnl = createPanel();
-        contentPnl.setOpaque(true);
-        contentPnl.setBackground(COLOR_APPLICATION_BACKGROUND);
-        contentPnl.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        dlg.getContentPane().setLayout(new BorderLayout());
-        dlg.getContentPane().add(contentPnl, BorderLayout.CENTER);
+        parent.getContentPane().setLayout(new BorderLayout());
+        parent.getContentPane().add(contentPnl, BorderLayout.CENTER);
         return contentPnl;
     }
 
@@ -607,6 +575,8 @@ public final class SeerGuiUtils {
         btn.setName(action + "-btn");
         btn.setToolTipText(tooltip);
         btn.addActionListener(listener);
+        btn.setFont(adjustFontSize(btn.getFont()));
+
         return btn;
     }
 
@@ -614,6 +584,7 @@ public final class SeerGuiUtils {
         JButton btn = createButton(null, action, tooltip, listener);
         btn.setIcon(createIcon(icon));
         btn.setFocusPainted(false);
+        btn.setFont(adjustFontSize(btn.getFont()));
         return btn;
     }
 
@@ -626,6 +597,7 @@ public final class SeerGuiUtils {
         btn.setName(action + "-btn");
         btn.setToolTipText(tooltip);
         btn.addActionListener(listener);
+        btn.setFont(adjustFontSize(btn.getFont()));
         return btn;
     }
 
@@ -642,6 +614,7 @@ public final class SeerGuiUtils {
         lbl.setOpaque(false);
         lbl.setFont(lbl.getFont().deriveFont(style));
         lbl.setForeground(color);
+        lbl.setFont(adjustFontSize(lbl.getFont()));
         return lbl;
     }
 
@@ -650,6 +623,7 @@ public final class SeerGuiUtils {
         lbl.setOpaque(false);
         lbl.setFont(lbl.getFont().deriveFont(style, size));
         lbl.setForeground(color);
+        lbl.setFont(adjustFontSize(lbl.getFont()));
         return lbl;
     }
 
@@ -658,6 +632,7 @@ public final class SeerGuiUtils {
         lbl.setOpaque(false);
         lbl.setFont(font);
         lbl.setForeground(color);
+        lbl.setFont(adjustFontSize(lbl.getFont()));
         return lbl;
     }
 
@@ -673,7 +648,7 @@ public final class SeerGuiUtils {
         box.setFont(box.getFont().deriveFont(style));
         if (listener != null)
             box.addActionListener(listener);
-
+        box.setFont(adjustFontSize(box.getFont()));
         return box;
     }
 
@@ -689,7 +664,7 @@ public final class SeerGuiUtils {
         btn.setFont(btn.getFont().deriveFont(style));
         if (listener != null)
             btn.addActionListener(listener);
-
+        btn.setFont(adjustFontSize(btn.getFont()));
         return btn;
     }
 
@@ -698,9 +673,8 @@ public final class SeerGuiUtils {
         item.setActionCommand(action);
         if (listener != null)
             item.addActionListener(listener);
-
         item.setName(action);
-
+        item.setFont(adjustFontSize(item.getFont()));
         return item;
     }
 

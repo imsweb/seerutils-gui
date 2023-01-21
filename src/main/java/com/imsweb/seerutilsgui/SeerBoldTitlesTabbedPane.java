@@ -14,6 +14,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
+@SuppressWarnings("unused")
 public class SeerBoldTitlesTabbedPane extends JTabbedPane {
 
     // whether the headers should be forced to have the same width (defaults to false)
@@ -23,22 +24,19 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
     protected boolean _centerTitles;
 
     // the border to use for the headers (default to a small empty border)
-    protected Border _titleBorder;
-
-    // the font to use for the headers (default to system font)
-    protected Font _headerFont;
+    protected transient Border _titleBorder;
 
     // the current tab that is being displayed
     protected int _currentTabIndex;
 
     // the pages displayed in the tabs per header title
-    protected Map<String, Component> _tabs = new HashMap<>();
+    protected final transient Map<String, Component> _tabs = new HashMap<>();
 
     // the tab indexes per header title
-    protected Map<String, Integer> _tabIndexes = new HashMap<>();
+    protected final transient Map<String, Integer> _tabIndexes = new HashMap<>();
 
     // the headers per header title
-    protected Map<String, SeerBoldTitlesTabbedPaneHeader> _headers = new HashMap<>();
+    protected final transient Map<String, SeerBoldTitlesTabbedPaneHeader> _headers = new HashMap<>();
 
     /**
      * Constructor.
@@ -53,7 +51,6 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
         _synchronizeHeaderWidth = false;
         _centerTitles = true;
         _titleBorder = BorderFactory.createEmptyBorder(2, 4, 2, 4);
-        _headerFont = null;
 
         this.addChangeListener(e -> {
             if (isVisible()) {
@@ -97,10 +94,6 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
         _titleBorder = titleBorder;
     }
 
-    public void setHeaderFont(Font font) {
-        _headerFont = font;
-    }
-
     public void addPage(SeerBoldTitlesTabbedPaneHeader header, Component page) {
         addPage(header, null, page, getTabCount());
     }
@@ -120,7 +113,7 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
     protected void addPage(SeerBoldTitlesTabbedPaneHeader header, String title, Component page, int idx) {
 
         if (header == null)
-            header = new SeerBoldTitlesTabbedPaneHeader(title, null, _titleBorder, _headerFont, _centerTitles, getTabCount() == 0);
+            header = new SeerBoldTitlesTabbedPaneHeader(title, null, _titleBorder, _centerTitles, getTabCount() == 0);
         if (title == null)
             title = header.getHeaderTitle();
 
@@ -323,6 +316,7 @@ public class SeerBoldTitlesTabbedPane extends JTabbedPane {
     }
 
     public void applyExtraStateChangedLogic() {
+        // no default behavior...
     }
 
     public void updateHeader(int tabIdx, String text) {

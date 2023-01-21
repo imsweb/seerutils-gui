@@ -20,7 +20,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-public class SeerList<E> extends JList {
+public class SeerList<E> extends JList<E> {
 
     /**
      * Available filtering mode (contains vs starts with)
@@ -54,7 +54,7 @@ public class SeerList<E> extends JList {
     /**
      * Private model
      */
-    private SeerListModel _model;
+    private final SeerListModel<E> _model;
 
     /**
      * Constructor.
@@ -85,7 +85,7 @@ public class SeerList<E> extends JList {
      * @param data data
      * @param displayStyle display style
      * @param filteringMode filtering mode
-     * @param addFocusBorder whether or not the focus border should be added
+     * @param addFocusBorder whether the focus border should be added
      * @param comp comparator for the list elements
      */
     public SeerList(List<E> data, int displayStyle, int filteringMode, boolean addFocusBorder, Comparator<E> comp) {
@@ -98,7 +98,7 @@ public class SeerList<E> extends JList {
      * Created on Jun 1, 2010 by depryf
      * @param model data model
      * @param displayStyle display style
-     * @param addFocusBorder whether or not the focus border should be added
+     * @param addFocusBorder whether the focus border should be added
      */
     @SuppressWarnings("unchecked")
     public SeerList(SeerListModel<E> model, int displayStyle, boolean addFocusBorder) {
@@ -107,6 +107,8 @@ public class SeerList<E> extends JList {
         this.setModel(_model);
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
+        this.setFont(SeerGuiUtils.adjustFontSize(this.getFont()));
 
         if (displayStyle == DISPLAY_MODE_ALT_COLORS) {
             this.setCellRenderer(new DefaultListCellRenderer() {
@@ -176,7 +178,6 @@ public class SeerList<E> extends JList {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void resetData(List<E> data) {
         _model.resetData(data);
     }

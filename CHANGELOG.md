@@ -1,8 +1,11 @@
 ## SEER*Utils GUI Version History
 
-**Changes in version 1.20**
+**Changes in version 2.0**
 
-- Added ability to provide a font for the specialized tabbed pane.
+- Added ability to provide a font delta in SeerGuiUtils that affects the font of all the components it creates.
+- Changed complex components so they apply new font delta from SeerGuiUtils.
+- Added a new SeerComboBox that supports separators.
+- Removed build information from SeerGuiUtils.
 
 **Changes in version 1.19**
 

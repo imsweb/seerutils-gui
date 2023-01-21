@@ -22,12 +22,13 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
 
 /**
- * A special JComboBox that allows auto-completion based on the its content.
+ * A special JComboBox that allows auto-completion based on its content.
  * <p/>
  * Created on Aug 2, 2010 by depryf
  * @author murphyr
  */
-public class SeerAutoCompleteComboBox extends JComboBox {
+@SuppressWarnings("unused")
+public class SeerAutoCompleteComboBox extends JComboBox<String> {
 
     public enum SeerAutoCompleteComboBoxSearchType {
         STARTS_WITH, CONTAINS, REGEX
@@ -36,12 +37,12 @@ public class SeerAutoCompleteComboBox extends JComboBox {
     /**
      * The search type
      */
-    private SeerAutoCompleteComboBoxSearchType _searchType;
+    private final SeerAutoCompleteComboBoxSearchType _searchType;
 
     /**
      * Special model for this component
      */
-    private SeerAutoCompleteComboBoxModel _model;
+    private final SeerAutoCompleteComboBoxModel _model;
 
     /**
      * The text component used for auto-completion
@@ -92,7 +93,6 @@ public class SeerAutoCompleteComboBox extends JComboBox {
      * @param type the search type
      * @param refreshRateMs how often do we need to check whether the popup needs to be refreshed (default is 20ms)
      */
-    @SuppressWarnings("unchecked")
     public SeerAutoCompleteComboBox(List<String> list, SeerAutoCompleteComboBoxSearchType type, int refreshRateMs) {
 
         _searchType = type;
@@ -113,12 +113,14 @@ public class SeerAutoCompleteComboBox extends JComboBox {
         _textComponent = (JTextComponent)getEditor().getEditorComponent();
         _textComponent.setDocument(new AutoCompleteDocument());
 
+        this.setFont(SeerGuiUtils.adjustFontSize(this.getFont()));
+        _textComponent.setFont(SeerGuiUtils.adjustFontSize(_textComponent.getFont()));
+
         // by default, nothing is selected
         setSelectedItem(null);
 
         // refresh the popup every 20 ms
         new Timer(refreshRateMs, e -> {
-            //noinspection ConstantConditions
             if (_updatePopup && isDisplayable()) {
                 setPopupVisible(false);
                 if (_model.getSize() > 0)
@@ -171,7 +173,7 @@ public class SeerAutoCompleteComboBox extends JComboBox {
         }
 
         public void updateModel() throws BadLocationException {
-            String textToMatch = getText(0, getLength());
+            String textToMatch = super.getText(0, getLength());
             setPattern(textToMatch);
         }
 
@@ -197,7 +199,7 @@ public class SeerAutoCompleteComboBox extends JComboBox {
             // insert the string into the document
             super.insertString(offs, str, a);
 
-            String text = getText(0, getLength());
+            String text = super.getText(0, getLength());
             if (_arrowKeyPressed) {
                 _model.setSelectedItem(text);
                 _arrowKeyPressed = false;
@@ -206,6 +208,12 @@ public class SeerAutoCompleteComboBox extends JComboBox {
                 updateModel();
 
             clearSelection();
+        }
+
+        private void clearSelection() throws BadLocationException {
+            int i = super.getText(0, getLength()).length();
+            _textComponent.setSelectionStart(i);
+            _textComponent.setSelectionEnd(i);
         }
     }
 
@@ -241,12 +249,6 @@ public class SeerAutoCompleteComboBox extends JComboBox {
             _updatePopup = true;
     }
 
-    private void clearSelection() {
-        int i = getText().length();
-        _textComponent.setSelectionStart(i);
-        _textComponent.setSelectionEnd(i);
-    }
-
     public synchronized void addToTop(String aString) {
         _model.addToTop(aString);
     }
@@ -261,15 +263,15 @@ public class SeerAutoCompleteComboBox extends JComboBox {
      * Created on Aug 2, 2010 by depryf
      * @author depryf
      */
-    private class SeerAutoCompleteComboBoxModel extends AbstractListModel implements ComboBoxModel {
+    private class SeerAutoCompleteComboBoxModel extends AbstractListModel<String> implements ComboBoxModel<String> {
 
         private String _selected;
         private static final int _LIMIT = 20;
-        private Data _data = new Data();
+        private final transient Data _data = new Data();
 
         class Data {
 
-            private List<String> _list = new ArrayList<>(_LIMIT);
+            private final List<String> _list = new ArrayList<>(_LIMIT);
             private List<String> _filtered;
 
             public void add(String s) {
@@ -347,7 +349,7 @@ public class SeerAutoCompleteComboBox extends JComboBox {
                 if (s == null || s.trim().isEmpty())
                     return true;
                 for (String item : _list)
-                    if (item.toLowerCase().equals(s.toLowerCase()))
+                    if (item.equalsIgnoreCase(s))
                         return true;
                 return false;
             }
@@ -414,7 +416,7 @@ public class SeerAutoCompleteComboBox extends JComboBox {
         }
 
         @Override
-        public Object getElementAt(int index) {
+        public String getElementAt(int index) {
             return _data.getFiltered().get(index);
         }
 

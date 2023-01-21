@@ -15,7 +15,8 @@ import javax.swing.border.Border;
 
 public class SeerBoldTitlesTabbedPaneHeader extends JPanel {
 
-    protected JLabel _tabHeaderLbl, _iconLbl;
+    protected JLabel _tabHeaderLbl;
+    protected JLabel _iconLbl;
 
     public SeerBoldTitlesTabbedPaneHeader(String label) {
         this(label, null, BorderFactory.createEmptyBorder(2, 4, 2, 4), false, false);
@@ -30,10 +31,6 @@ public class SeerBoldTitlesTabbedPaneHeader extends JPanel {
     }
 
     public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon, Border titleBorder, boolean centerTitle, boolean makeCurrent) {
-        this(label, icon, titleBorder, null, centerTitle, makeCurrent);
-    }
-
-    public SeerBoldTitlesTabbedPaneHeader(String label, ImageIcon icon, Border titleBorder, Font headerFont, boolean centerTitle, boolean makeCurrent) {
         this.setLayout(new FlowLayout(centerTitle ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0));
         this.setOpaque(false);
         if (titleBorder != null)
@@ -46,8 +43,6 @@ public class SeerBoldTitlesTabbedPaneHeader extends JPanel {
         }
 
         _tabHeaderLbl = SeerGuiUtils.createLabel(label);
-        if (headerFont != null)
-            _tabHeaderLbl.setFont(headerFont);
         this.add(_tabHeaderLbl);
 
         if (makeCurrent)

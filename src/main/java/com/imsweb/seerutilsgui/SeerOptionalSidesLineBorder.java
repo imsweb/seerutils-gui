@@ -11,7 +11,10 @@ import javax.swing.border.LineBorder;
 
 public class SeerOptionalSidesLineBorder extends LineBorder {
 
-    protected boolean _top, _left, _bottom, _right;
+    protected boolean _top;
+    protected boolean _left;
+    protected boolean _bottom;
+    protected boolean _right;
 
     public SeerOptionalSidesLineBorder(Color c, boolean top, boolean left, boolean bottom, boolean right) {
         super(c);
