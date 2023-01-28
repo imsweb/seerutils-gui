@@ -11,7 +11,7 @@ import com.imsweb.seerutilsgui.SeerGuiUtils;
 
 public class ActionFind extends TextAction {
 
-    private SearchDialog _searchDlg;
+    private final SearchDialog _searchDlg;
 
     public ActionFind(SearchDialog searchDlg) {
         super("FIND");
@@ -26,6 +26,6 @@ public class ActionFind extends TextAction {
         else if (!_searchDlg.isActive())
             _searchDlg.toFront();
 
-        javax.swing.SwingUtilities.invokeLater(() -> _searchDlg.reApplyFocus());
+        javax.swing.SwingUtilities.invokeLater(_searchDlg::reApplyFocus);
     }
 }

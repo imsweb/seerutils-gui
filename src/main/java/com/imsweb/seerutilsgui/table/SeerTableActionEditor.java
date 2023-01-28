@@ -22,13 +22,14 @@ public class SeerTableActionEditor extends AbstractCellEditor implements TableCe
 
     private SeerTableActionButton _btn;
 
-    private int _row, _col;
+    private int _row;
+    private int _col;
 
     private JTable _table;
 
     private boolean _editedByKey;
 
-    private SeerCellListener _cellListener;
+    private final transient SeerCellListener _cellListener;
 
     public SeerTableActionEditor(SeerCellListener l) {
         _cellListener = l;

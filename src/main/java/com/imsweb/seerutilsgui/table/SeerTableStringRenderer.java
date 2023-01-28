@@ -24,8 +24,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 
+import com.imsweb.seerutilsgui.SeerGuiUtils;
 import com.imsweb.seerutilsgui.SeerHighlightingEditorKit;
 
+@SuppressWarnings("java:S1172") // unused parameters
 public class SeerTableStringRenderer extends JPanel implements TableCellRenderer {
 
     // cached component used to render single-line text
@@ -37,21 +39,22 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
     // cached component used to render highlitable content
     protected final JTextPane _pane;
 
-    // cached component to calculate the preferred hight of a given row (note that I could use the other text area, 
+    // cached component to calculate the preferred high of a given row (note that I could use the other text area,
     // but I want to minimize any racing conditions).
     protected final JTextArea _area2;
 
     // cached font to use for both internal renderers
-    private Font _font;
+    private final Font _font;
 
     // if true, we are currently using the single-line renderer, otherwise we are using the multi-line one
-    private boolean _usingLbl, _usingBorderLayout;
+    private boolean _usingLbl;
+    private boolean _usingBorderLayout;
 
     // if set to true, highlighting will be enabled allowing filtering the text
     protected boolean _allowHightlighting;
 
     // cached highlighting editor kits
-    private Map<String, SeerHighlightingEditorKit> _highlights;
+    private final Map<String, SeerHighlightingEditorKit> _highlights;
 
     // the current search text
     private String _search = null;
@@ -79,7 +82,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
 
         _allowHightlighting = allowHighlighting;
 
-        _lbl = new JLabel();
+        _lbl = SeerGuiUtils.createLabel("");
         _lbl.setOpaque(false);
         _lbl.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
@@ -119,6 +122,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
     }
 
     @Override
+    @SuppressWarnings("java:S3824") // simplify map expression
     public synchronized Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         SeerColumn colInfo = ((SeerTable)table).getColumnInfo().get(table.convertColumnIndexToModel(column));
 
@@ -127,7 +131,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
         Font font = computeFontStyle(table, value, isSelected, hasFocus, row, column);
 
         if (_allowHightlighting) {
-            if (colInfo.getLongText()) {
+            if (Boolean.TRUE.equals(colInfo.getLongText())) {
                 if (!_usingBorderLayout) {
                     this.removeAll();
                     this.setLayout(new BorderLayout());
@@ -151,7 +155,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
                 _highlights.put(key, highlighting);
             }
             _pane.setEditorKit(highlighting);
-            if (!colInfo.getLongText() && colInfo.getCenterContent()) {
+            if (!Boolean.TRUE.equals(colInfo.getLongText()) && Boolean.TRUE.equals(colInfo.getCenterContent())) {
                 int w = (table.getColumnModel().getColumn(column).getWidth() - getValueWidth(text, table.getGraphics())) / 2;
                 _pane.setMargin(new Insets(0, 5 + w, 2, 5 + w));
             }
@@ -161,7 +165,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
             _pane.setText(text);
         }
         else {
-            if (colInfo.getLongText()) {
+            if (Boolean.TRUE.equals(colInfo.getLongText())) {
                 if (_usingLbl) {
                     this.removeAll();
                     this.add(_area, BorderLayout.CENTER);
@@ -179,7 +183,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
                     _usingLbl = true;
                 }
 
-                _lbl.setHorizontalAlignment(colInfo.getCenterContent() ? SwingConstants.CENTER : SwingConstants.LEFT);
+                _lbl.setHorizontalAlignment(Boolean.TRUE.equals(colInfo.getCenterContent()) ? SwingConstants.CENTER : SwingConstants.LEFT);
                 _lbl.setFont(font);
                 _lbl.setForeground(foregroundColor);
                 _lbl.setText(text);
@@ -278,13 +282,16 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
 
     @Override
     public void repaint(long tm, int x, int y, int width, int height) {
+        // empty...
     }
 
     @Override
     public void repaint(Rectangle r) {
+        // empty...
     }
 
     @Override
     public void repaint() {
+        // empty...
     }
 }

@@ -76,6 +76,7 @@ public class GoToLineDialog extends JDialog implements ActionListener, SeerWindo
         JPanel fieldPnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
         fieldPnl.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         _field = new JTextField(20);
+        _field.setFont(SeerGuiUtils.adjustFontSize(_field.getFont()));
         _field.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {

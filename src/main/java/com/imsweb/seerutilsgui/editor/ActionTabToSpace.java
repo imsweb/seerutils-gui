@@ -9,6 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
 
+@SuppressWarnings("unused")
 public class ActionTabToSpace extends TextAction {
 
     public ActionTabToSpace() {

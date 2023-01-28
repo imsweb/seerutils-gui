@@ -30,12 +30,14 @@ public class SeerSpinner extends JPanel implements ActionListener {
 
     private int _currentFrame;
 
-    private Shape _pointShape, _trajectoryShape;
+    private final transient Shape _pointShape;
+    private final transient Shape _trajectoryShape;
 
-    private Timer _timer;
+    private final Timer _timer;
 
     public SeerSpinner(int size) {
-        int point = size / 6, trajectory = size / 3 * 2;
+        int point = size / 6;
+        int trajectory = size / 3 * 2;
 
         _currentFrame = -1;
         _pointShape = new Ellipse2D.Double(0, 0, point, point);
@@ -149,11 +151,14 @@ public class SeerSpinner extends JPanel implements ActionListener {
         paintRotatedCenteredShapeAtPoint(p, c, g);
     }
 
+    @SuppressWarnings("java:S3358")
     private void paintRotatedCenteredShapeAtPoint(Point2D.Float p, Point2D.Float c, Graphics2D g) {
         Shape s = _pointShape;
         double hh = s.getBounds().getHeight() / 2;
         double wh = s.getBounds().getWidth() / 2;
-        double t, x, y;
+        double t;
+        double x;
+        double y;
         double a = c.y - p.y;
         double b = p.x - c.x;
         double sa = Math.signum(a);
@@ -233,7 +238,9 @@ public class SeerSpinner extends JPanel implements ActionListener {
         float c1ry = Math.abs(cp.y - coords[1]) / y;
         float c2rx = Math.abs(cp.x - coords[2]) / x;
         float c2ry = Math.abs(cp.y - coords[3]) / y;
-        float prevLength = 0, prevX = 0, prevY = 0;
+        float prevLength = 0;
+        float prevX = 0;
+        float prevY = 0;
         for (float t = 0.01f; t <= 1.0f; t += .01f) {
             Point2D.Float xy = getXY(t, c1rx, c1ry, c2rx, c2ry);
             prevLength += (float)Math.sqrt((xy.x - prevX) * (xy.x - prevX) + (xy.y - prevY) * (xy.y - prevY));
@@ -264,7 +271,9 @@ public class SeerSpinner extends JPanel implements ActionListener {
         end.y = e1ay / maxY;
 
         // calculate length
-        float prevLength = 0, prevX = 0, prevY = 0;
+        float prevLength = 0;
+        float prevX = 0;
+        float prevY = 0;
         for (float t = 0.01f; t <= 1.0f; t += .01f) {
             Point2D.Float xy = getXY(t, new Point2D.Float(0, 0), ctrl, end);
             prevLength += (float)Math.sqrt((xy.x - prevX) * (xy.x - prevX)

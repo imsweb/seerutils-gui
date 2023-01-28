@@ -39,7 +39,8 @@ public class AutoCompleteDialog extends JDialog {
     private static final Color _BG_COLOR = new Color(255, 255, 210);
     private static final Color _FG_COLOR = new Color(235, 235, 0);
 
-    protected String _currentWord, _prefix;
+    protected String _currentWord;
+    protected String _prefix;
 
     protected JEditorPane _parent;
 
@@ -66,7 +67,7 @@ public class AutoCompleteDialog extends JDialog {
         _list.getActionMap().put("enter", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                performCompleteCurrentWord((String)_list.getSelectedValue());
+                performCompleteCurrentWord(_list.getSelectedValue());
             }
         });
         _list.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
@@ -81,7 +82,7 @@ public class AutoCompleteDialog extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     e.consume();
-                    performCompleteCurrentWord((String)_list.getSelectedValue());
+                    performCompleteCurrentWord(_list.getSelectedValue());
                 }
             }
         });
@@ -95,6 +96,7 @@ public class AutoCompleteDialog extends JDialog {
         JPanel filterPnl = SeerGuiUtils.createPanel();
         filterPnl.setBorder(new SeerOptionalSidesLineBorder(Color.GRAY, false, false, true, false));
         _filterFld = new JTextField();
+        _filterFld.setFont(SeerGuiUtils.adjustFontSize(_filterFld.getFont()));
         _filterFld.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         _filterFld.setBackground(_BG_COLOR);
 
@@ -111,7 +113,7 @@ public class AutoCompleteDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (_list.getSelectedIndex() != -1)
-                    performCompleteCurrentWord((String)_list.getSelectedValue());
+                    performCompleteCurrentWord(_list.getSelectedValue());
                 else
                     performCompleteCurrentWord(_filterFld.getText());
             }
@@ -156,6 +158,7 @@ public class AutoCompleteDialog extends JDialog {
         this.addWindowFocusListener(new WindowFocusListener() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
+                // nothing to do
             }
 
             @Override
@@ -223,7 +226,7 @@ public class AutoCompleteDialog extends JDialog {
     public static String evaluateCurrentWord(JEditorPane pane) {
         StringBuilder buf = new StringBuilder();
 
-        String text = pane.getText().replaceAll("\\r\\n", "\n");
+        String text = pane.getText().replace("\\r\\n", "\n");
         for (int i = pane.getCaretPosition() - 1; i >= 0; i--) {
             char c = text.charAt(i);
             if (c == ' ' || c == '\n' || c == '(' || c == '[' || c == '{')

@@ -456,11 +456,11 @@ public class SeerTwoListsSelectionPanel<E> extends JPanel implements ActionListe
         SeerListModel<E> rightModel = (SeerListModel<E>)_rightList.getModel();
 
         E firstMoved = null;
-        for (Object obj : _rightList.getSelectedValuesList()) {
+        for (E obj : _rightList.getSelectedValuesList()) {
             if (firstMoved == null)
-                firstMoved = (E)obj;
-            rightModel.removeElement((E)obj);
-            leftModel.addElement((E)obj);
+                firstMoved = obj;
+            rightModel.removeElement(obj);
+            leftModel.addElement(obj);
         }
 
         // make sure the first value moved is visible to the user
@@ -503,11 +503,11 @@ public class SeerTwoListsSelectionPanel<E> extends JPanel implements ActionListe
         SeerListModel<E> rightModel = (SeerListModel<E>)_rightList.getModel();
 
         E firstMoved = null;
-        for (Object obj : _leftList.getSelectedValuesList()) {
+        for (E obj : _leftList.getSelectedValuesList()) {
             if (firstMoved == null)
-                firstMoved = (E)obj;
-            leftModel.removeElement((E)obj);
-            rightModel.addElement((E)obj);
+                firstMoved = obj;
+            leftModel.removeElement(obj);
+            rightModel.addElement(obj);
         }
 
         // make sure the first value moved is visible to the user

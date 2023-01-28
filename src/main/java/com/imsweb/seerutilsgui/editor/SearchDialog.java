@@ -46,15 +46,24 @@ import javax.swing.text.JTextComponent;
 import com.imsweb.seerutilsgui.SeerGuiUtils;
 import com.imsweb.seerutilsgui.SeerWindow;
 
+@SuppressWarnings("unused")
 public class SearchDialog extends JDialog implements ActionListener, SeerWindow {
 
     /**
      * Global GUI components
      */
-    private final JComboBox _searchBox, _replaceBox;
-    private final JCheckBox _caseBox, _wrapBox, _regexBox;
-    private final JRadioButton _allBtn, _selectedBtn;
-    private final JButton _findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, _countBtn, _closeBtn;
+    private final JComboBox<String> _searchBox;
+    private final JComboBox<String> _replaceBox;
+    private final JCheckBox _caseBox;
+    private final JCheckBox _wrapBox;
+    private final JCheckBox _regexBox;
+    private final JRadioButton _allBtn;
+    private final JRadioButton _selectedBtn;
+    private final JButton _findBtn;
+    private final JButton _replaceFindBtn;
+    private final JButton _replaceBtn;
+
+    private final JButton _replaceAllBtn;
     private final JLabel _statusLbl;
 
     /**
@@ -70,7 +79,7 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
     /**
      * Marker
      */
-    private final SyntaxUtils.SimpleMarker _marker = new SyntaxUtils.SimpleMarker(Color.LIGHT_GRAY);
+    private final transient SyntaxUtils.SimpleMarker _marker = new SyntaxUtils.SimpleMarker(Color.LIGHT_GRAY);
 
     /**
      * Constructor.
@@ -150,14 +159,15 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         c.gridy = 0;
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.LINE_END;
-        comboPnl.add(new JLabel("Find:"), c);
+        comboPnl.add(SeerGuiUtils.createLabel("Find:"), c);
         c.gridx = 1;
         c.gridy = 0;
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.anchor = GridBagConstraints.LINE_START;
-        _searchBox = new JComboBox();
+        _searchBox = new JComboBox<>();
         _searchBox.setEditable(true);
         _searchBox.setPreferredSize(new Dimension(175, 20));
+        _searchBox.setFont(SeerGuiUtils.adjustFontSize(_searchBox.getFont()));
         ((JTextField)_searchBox.getEditor().getEditorComponent()).getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
         ((JTextField)_searchBox.getEditor().getEditorComponent()).getActionMap().put("enter", new AbstractAction() {
             @Override
@@ -172,14 +182,15 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         c.gridy = 1;
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.LINE_END;
-        comboPnl.add(new JLabel("Replace With:"), c);
+        comboPnl.add(SeerGuiUtils.createLabel("Replace With:"), c);
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.anchor = GridBagConstraints.LINE_START;
-        _replaceBox = new JComboBox();
+        _replaceBox = new JComboBox<>();
         _replaceBox.setEditable(true);
         _replaceBox.setPreferredSize(new Dimension(175, 20));
+        _replaceBox.setFont(SeerGuiUtils.adjustFontSize(_replaceBox.getFont()));
         ((JTextField)_replaceBox.getEditor().getEditorComponent()).getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
         ((JTextField)_replaceBox.getEditor().getEditorComponent()).getActionMap().put("enter", new AbstractAction() {
             @Override
@@ -255,16 +266,16 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         controlsPnl.add(Box.createVerticalStrut(5));
 
         JPanel controls3Pnl = SeerGuiUtils.createPanel();
-        _countBtn = SeerGuiUtils.createButton("Count", "count", "Count", this);
-        _countBtn.addKeyListener(keyAdapter);
-        controls3Pnl.add(_countBtn, BorderLayout.WEST);
+        JButton countBtn = SeerGuiUtils.createButton("Count", "count", "Count", this);
+        countBtn.addKeyListener(keyAdapter);
+        controls3Pnl.add(countBtn, BorderLayout.WEST);
         controls3Pnl.add(SeerGuiUtils.createPanel(), BorderLayout.CENTER);
-        _closeBtn = SeerGuiUtils.createButton("Close", "close", "Close", this);
-        _closeBtn.addKeyListener(keyAdapter);
-        controls3Pnl.add(_closeBtn, BorderLayout.EAST);
+        JButton closeBtn = SeerGuiUtils.createButton("Close", "close", "Close", this);
+        closeBtn.addKeyListener(keyAdapter);
+        controls3Pnl.add(closeBtn, BorderLayout.EAST);
         controlsPnl.add(controls3Pnl);
 
-        SeerGuiUtils.synchronizedComponentsWidth(_findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, _countBtn, _closeBtn);
+        SeerGuiUtils.synchronizedComponentsWidth(_findBtn, _replaceFindBtn, _replaceBtn, _replaceAllBtn, countBtn, closeBtn);
         contentPnl.add(controlsPnl);
 
         JPanel statusPnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
@@ -416,7 +427,8 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         int count = 0;
         try {
             // we can't replace as we go since we need to replace in revert order (because of the replacement), but the Matcher can't search from the end
-            List<Integer> starts = new ArrayList<>(), ends = new ArrayList<>();
+            List<Integer> starts = new ArrayList<>();
+            List<Integer> ends = new ArrayList<>();
             Matcher matcher = sDoc.getMatcher(_pattern, start);
             while (matcher.find() && (_allBtn.isSelected() || matcher.end() + start < _comp.getSelectionEnd())) {
                 starts.add(matcher.start() + start);
@@ -489,9 +501,8 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
         SyntaxUtils.removeMarkers(_comp, _marker);
     }
 
-    @SuppressWarnings("unchecked")
-    private void insertIntoCombo(JComboBox combo, Object item) {
-        MutableComboBoxModel model = (MutableComboBoxModel)combo.getModel();
+    private void insertIntoCombo(JComboBox<String> combo, String item) {
+        MutableComboBoxModel<String> model = (MutableComboBoxModel<String>)combo.getModel();
         if (model.getSize() == 0) {
             model.insertElementAt(item, 0);
             return;

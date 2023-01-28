@@ -36,17 +36,17 @@ public final class SyntaxStyles {
     /**
      * Current styles
      */
-    private Map<LexerToken.TokenType, SyntaxStyle> _styles = new HashMap<>();
+    private final Map<LexerToken.TokenType, SyntaxStyle> _styles = new HashMap<>();
 
     /**
      * Default style
      */
-    private SyntaxStyle _defaultStyle = new SyntaxStyle(Color.BLACK, Font.PLAIN);
+    private final SyntaxStyle _defaultStyle = new SyntaxStyle(Color.BLACK, Font.PLAIN);
 
     /**
      * Disabled style
      */
-    private SyntaxStyle _disabledStyle = new SyntaxStyle(Color.GRAY, Font.PLAIN);
+    private final SyntaxStyle _disabledStyle = new SyntaxStyle(Color.GRAY, Font.PLAIN);
 
     /**
      * Whether the disabled style should be use or not
@@ -123,12 +123,12 @@ public final class SyntaxStyles {
         /**
          * Color for this style
          */
-        private Color _color;
+        private final Color _color;
 
         /**
          * Font properties for this style
          */
-        private int _fontStyle;
+        private final int _fontStyle;
 
         /**
          * Constructor.
