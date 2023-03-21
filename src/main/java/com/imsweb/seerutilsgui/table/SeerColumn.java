@@ -5,6 +5,8 @@ package com.imsweb.seerutilsgui.table;
 
 import java.io.Serializable;
 
+import com.imsweb.seerutilsgui.SeerGuiUtils;
+
 @SuppressWarnings("unused")
 public class SeerColumn implements Serializable {
 
@@ -103,7 +105,13 @@ public class SeerColumn implements Serializable {
     }
 
     public SeerColumn setFixedSize(Integer size) {
+        return setFixedSize(size, true);
+    }
+
+    public SeerColumn setFixedSize(Integer size, boolean adjustForFontSize) {
         _fixedSize = size;
+        if (SeerGuiUtils.getFontDelta() > 0 && adjustForFontSize)
+            _fixedSize = _fixedSize + (_fixedSize * SeerGuiUtils.getFontDelta() / 12);
         return this;
     }
 

@@ -67,6 +67,8 @@ public class EditableTableTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(2);
+
         _LAYOUT = (NaaccrLayout)LayoutFactory.getLayout(LayoutFactory.LAYOUT_ID_NAACCR_13);
         _LINE_LENGTH = _LAYOUT.getLayoutLineLength();
 

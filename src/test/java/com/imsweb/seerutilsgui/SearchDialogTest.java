@@ -29,6 +29,8 @@ public class SearchDialogTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(2);
+
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(800, 600));
@@ -37,7 +39,7 @@ public class SearchDialogTest {
 
         JEditorPane pane = new JEditorPane();
         pane.setEditorKit(new SyntaxKit(SyntaxKit.SYNTAX_TYPE_PLAIN, null));
-        pane.setFont(getMonospaceFont());
+        pane.setFont(SeerGuiUtils.adjustFontSize(getMonospaceFont()));
         pane.setEditable(false);
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < 100; i++)

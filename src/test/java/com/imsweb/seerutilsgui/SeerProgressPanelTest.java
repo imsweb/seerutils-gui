@@ -34,6 +34,8 @@ public class SeerProgressPanelTest {
         myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         myFrame.setPreferredSize(new Dimension(300, 200));
 
+        SeerGuiUtils.setFontDelta(2);
+
         _PROGRESS_PNL = new SeerProgressPanel(0, 10, 100, "Waiting to start", "", "", 20, 0, 0);
         myFrame.add(_PROGRESS_PNL, BorderLayout.CENTER);
 

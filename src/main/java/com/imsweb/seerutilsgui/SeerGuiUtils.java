@@ -50,11 +50,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
-// TODO need to test the SeerTable, SeerSpinner and the syntax document actions (especially the search)
-// TODO FD I added SeerComboBox; I think there was something about clickableLabel that I wanted to add from File*Pro...
-// TODO FD not sure how to fix SeerHelpDialog (HTML)
-// TODO SeerProgressDialog not sure, doesn't look like it's working
-
 /**
  * Generic GUI utility class for the SEER projects.
  */
@@ -108,6 +103,13 @@ public final class SeerGuiUtils {
      */
     public static void setFontDelta(int delta) {
         _FONT_DELTA = delta;
+    }
+
+    /**
+     * Returns the current font delta.
+     */
+    public static int getFontDelta() {
+        return _FONT_DELTA;
     }
 
     /**

@@ -45,6 +45,8 @@ public class SeerTableTest {
     public static void main(String[] args) throws Exception {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(2);
+
         final JFrame frame = new JFrame("SEER Table Demo");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1200, 800));
@@ -56,7 +58,7 @@ public class SeerTableTest {
         cols.add(new SeerColumn("Hidden").setVisible(false));
         cols.add(new SeerColumn("Version").setWidth(SeerColumn.SeerColumnWidthType.MIN).setCenterContent(true).setDefaultSort(SeerColumn.SeerColumnSortOrderType.DESCENDING));
         cols.add(new SeerColumn("Squish").setWidth(SeerColumn.SeerColumnWidthType.MIN).setCenterContent(true));
-        cols.add(new SeerColumn("Ref").setWidth(SeerColumn.SeerColumnWidthType.FIXED).setFixedSize(50).setCenterContent(true));
+        cols.add(new SeerColumn("Ref").setWidth(SeerColumn.SeerColumnWidthType.FIXED).setFixedSize(50, false).setCenterContent(true));
         cols.add(new SeerColumn("Description").setLongText(Boolean.TRUE));
 
         // build the data
@@ -123,6 +125,7 @@ public class SeerTableTest {
         filterPnl.add(SeerGuiUtils.createLabel("Text: ", Font.BOLD));
         filterPnl.add(Box.createHorizontalStrut(5));
         final JTextField filterFld = new JTextField(25);
+        filterFld.setFont(SeerGuiUtils.adjustFontSize(filterFld.getFont()));
         filterFld.setBorder(SeerGuiUtils.BORDER_TEXT_FIELD_OUT);
         filterPnl.add(filterFld);
         filterPnl.add(Box.createHorizontalStrut(20));

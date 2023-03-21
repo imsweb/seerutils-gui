@@ -34,6 +34,8 @@ public class AutoCompleteDialogTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(2);
+
         JFrame frame = new JFrame("Text Autocompletion Test");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(600, 400));
@@ -67,6 +69,8 @@ public class AutoCompleteDialogTest {
             editor.setFont(new Font("Courier", Font.PLAIN, 12));
         else
             editor.setFont(new Font("Monospaced", Font.PLAIN, 13));
+
+        editor.setFont(SeerGuiUtils.adjustFontSize(editor.getFont()));
 
         editor.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK), "autocomplete");
         editor.getActionMap().put("autocomplete", new AbstractAction() {

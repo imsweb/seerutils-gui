@@ -156,7 +156,10 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
             }
             _pane.setEditorKit(highlighting);
             if (!Boolean.TRUE.equals(colInfo.getLongText()) && Boolean.TRUE.equals(colInfo.getCenterContent())) {
-                int w = (table.getColumnModel().getColumn(column).getWidth() - getValueWidth(text, table.getGraphics())) / 2;
+                int colWidth = table.getColumnModel().getColumn(column).getWidth();
+                int textWidth = getValueWidth(text, table.getGraphics());
+
+                int w = (colWidth - textWidth) / 2;
                 _pane.setMargin(new Insets(0, 5 + w, 2, 5 + w));
             }
             else
@@ -277,7 +280,7 @@ public class SeerTableStringRenderer extends JPanel implements TableCellRenderer
         if (val == null)
             return 0;
 
-        return SwingUtilities.computeStringWidth(g.getFontMetrics(), val) + 14;
+        return SwingUtilities.computeStringWidth(g.getFontMetrics(), val) + 14 + SeerGuiUtils.getFontDelta();
     }
 
     @Override

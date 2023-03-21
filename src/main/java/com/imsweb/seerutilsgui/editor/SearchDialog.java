@@ -40,6 +40,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
@@ -206,7 +207,9 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
 
         JPanel optionsPnl = SeerGuiUtils.createPanel();
         optionsPnl.setLayout(new BoxLayout(optionsPnl, BoxLayout.Y_AXIS));
-        optionsPnl.setBorder(BorderFactory.createTitledBorder("Options"));
+        TitledBorder optionsTitleBorder = BorderFactory.createTitledBorder("Options");
+        optionsTitleBorder.setTitleFont(SeerGuiUtils.adjustFontSize(optionsTitleBorder.getTitleFont()));
+        optionsPnl.setBorder(optionsTitleBorder);
         _caseBox = SeerGuiUtils.createCheckBox("Case Sensitive", "option-sensitive", null);
         optionsPnl.add(_caseBox);
         _wrapBox = SeerGuiUtils.createCheckBox("Wrap Search", "option-sensitive", null);
@@ -218,7 +221,9 @@ public class SearchDialog extends JDialog implements ActionListener, SeerWindow 
 
         JPanel scopePnl = SeerGuiUtils.createPanel();
         scopePnl.setLayout(new BoxLayout(scopePnl, BoxLayout.Y_AXIS));
-        scopePnl.setBorder(BorderFactory.createTitledBorder("Scope"));
+        TitledBorder scopeTitleBorder = BorderFactory.createTitledBorder("Scope");
+        scopeTitleBorder.setTitleFont(SeerGuiUtils.adjustFontSize(optionsTitleBorder.getTitleFont()));
+        scopePnl.setBorder(scopeTitleBorder);
         _allBtn = SeerGuiUtils.createRadioButton("All", "scope-all", null);
         _allBtn.setSelected(true);
         scopePnl.add(_allBtn);

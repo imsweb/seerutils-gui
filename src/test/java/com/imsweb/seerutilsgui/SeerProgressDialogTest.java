@@ -15,7 +15,9 @@ public class SeerProgressDialogTest {
 
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
-        SeerGuiUtils.setFontDelta(5);
+
+        SeerGuiUtils.setFontDelta(2);
+
         JFrame myFrame = new JFrame("SeerProgressDialogTest");
         myFrame.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 55));
         myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

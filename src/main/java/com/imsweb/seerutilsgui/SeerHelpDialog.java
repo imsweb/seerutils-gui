@@ -113,9 +113,13 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
                 HTMLDocument doc = (HTMLDocument)(super.createDefaultDocument());
                 doc.setAsynchronousLoadPriority(-1);
 
-                // bullets look terrible in Swing, let's replace them with an image
                 StyleSheet styleSheet = getStyleSheet();
+
+                // bullets look terrible in Swing, let's replace them with an image
                 styleSheet.addRule("ul {list-style-image: url(bullet.png);}");
+
+                // adjust the font if needed
+                styleSheet.addRule("body { font-family: Serif; font-size: " + (14 + Math.floorDiv(SeerGuiUtils.getFontDelta(), 2)) + "pt; }");
 
                 return doc;
             }
@@ -123,8 +127,6 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
 
         // let's set the base URL to the icon folder, that way images can very easily be added without any prefix
         ((HTMLDocument)_pane.getDocument()).setBase(Thread.currentThread().getContextClassLoader().getResource("icons/"));
-
-        // TODO FD not sure how to handle the FONT DELTA on this one...
 
         _pane.setEditable(false);
         _pane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
@@ -380,14 +382,15 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
      * @param relativeTo relative to component
      */
     public void setRelativeComponent(JComponent relativeTo, Window parent) {
+        int delta = SeerGuiUtils.getFontDelta();
 
         // first calculate preferred size based on content (note that this size can changed based on the relative component, see calculatePosition())
         this.pack();
-        int w = Math.min(Math.min(980, parent.getWidth() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().width + 20));
-        int h = Math.min(Math.min(980, parent.getHeight() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().height + 20));
+        int w = Math.min(Math.min(980, parent.getWidth() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().width + 20 + delta));
+        int h = Math.min(Math.min(980, parent.getHeight() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().height + 20 + delta));
         this.setPreferredSize(new Dimension(w, h));
 
-        // then caluculate the preferred location
+        // then calculate the preferred location
         this.pack();
         this.setLocation(calculatePosition(relativeTo, parent));
     }

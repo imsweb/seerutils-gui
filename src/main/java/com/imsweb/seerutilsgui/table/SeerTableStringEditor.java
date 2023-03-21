@@ -88,7 +88,7 @@ public class SeerTableStringEditor extends AbstractCellEditor implements TableCe
 
         SeerColumn colInfo = ((SeerTable)table).getColumnInfo().get(table.convertColumnIndexToModel(column));
         if (!Boolean.TRUE.equals(colInfo.getLongText())) {
-            int i = _table.getRowHeight() - _field.getFontMetrics(new JLabel().getFont()).getHeight();
+            int i = _table.getRowHeight() - table.getFontMetrics(_field.getFont()).getHeight();
             if (i > 0) {
                 _field.getMargin().top = i / 2;
                 _field.getMargin().bottom = i / 2;

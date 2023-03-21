@@ -226,7 +226,9 @@ public class AutoCompleteDialog extends JDialog {
     public static String evaluateCurrentWord(JEditorPane pane) {
         StringBuilder buf = new StringBuilder();
 
-        String text = pane.getText().replace("\\r\\n", "\n");
+        // when "county" characters, JEditorPane considers the \r\n as a single character; this causes
+        // the "getCaretPosition()" to return unexpected results; that's why we change all those to single \n
+        String text = pane.getText().replace("\r\n", "\n");
         for (int i = pane.getCaretPosition() - 1; i >= 0; i--) {
             char c = text.charAt(i);
             if (c == ' ' || c == '\n' || c == '(' || c == '[' || c == '{')

@@ -125,7 +125,7 @@ public class SeerTable extends JTable {
         SeerTableModel model = new SeerTableModel(colInfo, data);
 
         this.setModel(model);
-        this.setRowHeight(TABLE_ROW_HEIGHT);
+        this.setRowHeight(TABLE_ROW_HEIGHT + SeerGuiUtils.getFontDelta());
         this.setIntercellSpacing(new Dimension(1, 1));
         this.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         this.setGridColor(Color.LIGHT_GRAY);
@@ -147,7 +147,7 @@ public class SeerTable extends JTable {
         }
 
         ((DefaultTableCellRenderer)this.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        this.getTableHeader().setFont(this.getTableHeader().getFont().deriveFont(Font.BOLD));
+        this.getTableHeader().setFont(SeerGuiUtils.adjustFontSize(this.getTableHeader().getFont().deriveFont(Font.BOLD)));
 
         // disable default F2 key behavior which is to edit current cell
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), "none");

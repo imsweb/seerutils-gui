@@ -10,6 +10,7 @@ import java.awt.Desktop.Action;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -30,7 +31,9 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
             Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
             if (desktop != null && desktop.isSupported(action)) {
                 try {
-                    if (action == Action.BROWSE)
+                    if (action == Action.OPEN)
+                        desktop.open(new File(url));
+                    else if (action == Action.BROWSE)
                         desktop.browse(URI.create(url));
                     else if (action == Action.MAIL)
                         desktop.mail(URI.create(url));
@@ -61,7 +64,7 @@ public class SeerClickableLabel extends JLabel implements MouseListener {
     /**
      * Constructor
      * @param label text for the label
-     * @param action action to execute when the lable is clicked
+     * @param action action to execute when the label is clicked
      */
     public SeerClickableLabel(String label, SeerClickableLabelAction action) {
         super(label);
