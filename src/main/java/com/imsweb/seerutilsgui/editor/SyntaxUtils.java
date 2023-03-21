@@ -30,7 +30,7 @@ import javax.swing.text.PlainDocument;
  * This class contains static utility methods to make highlighting in text components easier.
  */
 @SuppressWarnings("unused")
-public class SyntaxUtils {
+public final class SyntaxUtils {
 
     private SyntaxUtils() {
         // utility class only...
