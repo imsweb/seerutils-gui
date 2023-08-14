@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
 
+@SuppressWarnings("unused")
 public class ActionRedo extends TextAction {
 
     public ActionRedo() {

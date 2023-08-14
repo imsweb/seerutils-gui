@@ -11,7 +11,6 @@ import java.util.EventObject;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -29,7 +28,8 @@ public class SeerTableStringEditor extends AbstractCellEditor implements TableCe
     /**
      * The currently edited row and column.
      */
-    protected int _row, _col;
+    protected int _row;
+    protected int _col;
 
     /**
      * The parent table.
@@ -39,7 +39,7 @@ public class SeerTableStringEditor extends AbstractCellEditor implements TableCe
     /**
      * An optional cell listener; if not null, it will be notified once the editing is done.
      */
-    protected SeerCellListener _cellListener;
+    protected transient SeerCellListener _cellListener;
 
     /**
      * Constructor
@@ -78,7 +78,7 @@ public class SeerTableStringEditor extends AbstractCellEditor implements TableCe
         _col = column;
         _table = table;
         _field = new JTextArea((String)value);
-        _field.setFont(new JLabel().getFont());
+        _field.setFont(SeerGuiUtils.createLabel("").getFont());
 
         javax.swing.SwingUtilities.invokeLater(() -> {
             _field.requestFocusInWindow();
@@ -86,8 +86,8 @@ public class SeerTableStringEditor extends AbstractCellEditor implements TableCe
         });
 
         SeerColumn colInfo = ((SeerTable)table).getColumnInfo().get(table.convertColumnIndexToModel(column));
-        if (!colInfo.getLongText()) {
-            int i = _table.getRowHeight() - _field.getFontMetrics(new JLabel().getFont()).getHeight();
+        if (!Boolean.TRUE.equals(colInfo.getLongText())) {
+            int i = _table.getRowHeight() - table.getFontMetrics(_field.getFont()).getHeight();
             if (i > 0) {
                 _field.getMargin().top = i / 2;
                 _field.getMargin().bottom = i / 2;

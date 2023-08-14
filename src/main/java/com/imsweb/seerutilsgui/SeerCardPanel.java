@@ -13,13 +13,14 @@ import javax.swing.JPanel;
 /**
  * A panel that uses a card layout to display pages on top of each other.
  */
+@SuppressWarnings("unused")
 public class SeerCardPanel extends JPanel {
 
-    private CardLayout _layout;
+    private final CardLayout _layout;
 
     private String _currentPageId;
 
-    private Map<String, JComponent> _pages;
+    private final Map<String, JComponent> _pages;
 
     public SeerCardPanel() {
         _layout = new CardLayout();

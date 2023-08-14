@@ -10,13 +10,14 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-public class SeerListModel<E> extends AbstractListModel {
+@SuppressWarnings("unused")
+public class SeerListModel<E> extends AbstractListModel<E> {
 
-    protected List<E> _originalData;
+    protected transient List<E> _originalData;
 
-    protected List<E> _filteredData;
+    protected transient List<E> _filteredData;
 
-    protected Comparator<E> _comparator;
+    protected transient Comparator<E> _comparator;
 
     protected int _filteringMode;
 
@@ -83,7 +84,6 @@ public class SeerListModel<E> extends AbstractListModel {
         fireIntervalAdded(this, 0, _filteredData.size());
     }
 
-    @SuppressWarnings("IfStatementWithIdenticalBranches")
     protected boolean filterElement(E element, String filter) {
         String s = element instanceof String ? ((String)element).toLowerCase() : element.toString().toLowerCase();
 
@@ -92,11 +92,9 @@ public class SeerListModel<E> extends AbstractListModel {
             add = true;
         else {
             String filterLower = filter.toLowerCase();
-            if (_filteringMode == SeerList.FILTERING_MODE_EQUALS && s.equals(filterLower))
-                add = true;
-            else if (_filteringMode == SeerList.FILTERING_MODE_STARTS_WITH && s.startsWith(filterLower))
-                add = true;
-            else if (_filteringMode == SeerList.FILTERING_MODE_CONTAINED && s.contains(filterLower))
+            if (_filteringMode == SeerList.FILTERING_MODE_EQUALS && s.equals(filterLower)
+                    || _filteringMode == SeerList.FILTERING_MODE_STARTS_WITH && s.startsWith(filterLower)
+                    || _filteringMode == SeerList.FILTERING_MODE_CONTAINED && s.contains(filterLower))
                 add = true;
         }
 

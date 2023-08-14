@@ -20,13 +20,14 @@ public class SeerTableCheckBoxEditor extends AbstractCellEditor implements Table
 
     private SeerTableCheckBox _box;
 
-    private int _row, _col;
+    private int _row;
+    private int _col;
 
     private JTable _table;
 
     private boolean _editedByKey;
 
-    private SeerCellListener _cellListener;
+    private final transient SeerCellListener _cellListener;
 
     public SeerTableCheckBoxEditor(SeerCellListener l) {
         _cellListener = l;

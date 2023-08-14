@@ -36,12 +36,13 @@ import javax.swing.undo.UndoManager;
  * A document that supports being highlighted.  The document maintains an internal List of all the Tokens.
  * The Tokens are updated using a Lexer, passed to it during construction.
  */
+@SuppressWarnings("unused")
 public class SyntaxDocument extends PlainDocument {
 
     /**
      * Private <code>Lexer</code> used to parse the content of this document
      */
-    private Lexer _lexer;
+    private final transient Lexer _lexer;
 
     /**
      * List of the <code>Token</code> contained in this document
@@ -51,7 +52,7 @@ public class SyntaxDocument extends PlainDocument {
     /**
      * Undo manager
      */
-    private UndoManager _undoMgr = new UndoManager();
+    private final UndoManager _undoMgr = new UndoManager();
 
     /**
      * Action that needs to be executed when the content of the document changes
@@ -78,6 +79,7 @@ public class SyntaxDocument extends PlainDocument {
      * exist in the tokens list.  There may be overlaps, and replacements,
      * which we will cleanup later.
      */
+    @SuppressWarnings("java:S2093") // try-with-resources
     private void parse() {
 
         // if we have no lexer, then we must have no tokens...
@@ -175,7 +177,7 @@ public class SyntaxDocument extends PlainDocument {
                 if (_ndx < 0) {
                     // so, start from one before the token where we should be...
                     // -1 to get the location, and another -1 to go back..
-                    _ndx = (-_ndx - 1 - 1 < 0) ? 0 : (-_ndx - 1 - 1);
+                    _ndx = Math.max(-_ndx - 1 - 1, 0);
                     LexerToken t = _tokens.get(_ndx);
                     // if the prev token does not overlap, then advance one
                     if (t.end() <= start) {
@@ -199,6 +201,7 @@ public class SyntaxDocument extends PlainDocument {
         }
 
         @Override
+        @SuppressWarnings("java:S2272") // deal with end of iteration
         public LexerToken next() {
             return _tokens.get(_ndx++);
         }
@@ -271,7 +274,7 @@ public class SyntaxDocument extends PlainDocument {
         if (ndx < 0) {
             // so, start from one before the token where we should be...
             // -1 to get the location, and another -1 to go back..
-            ndx = (-ndx - 1 - 1 < 0) ? 0 : (-ndx - 1 - 1);
+            ndx = Math.max(-ndx - 1 - 1, 0);
             LexerToken t = _tokens.get(ndx);
             if ((t.start <= pos) && (pos <= t.end())) {
                 tok = t;

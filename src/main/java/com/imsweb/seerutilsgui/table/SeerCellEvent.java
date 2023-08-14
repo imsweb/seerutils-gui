@@ -7,7 +7,8 @@ import java.awt.event.ActionEvent;
 
 public class SeerCellEvent extends ActionEvent {
 
-    private int _row, _col;
+    private int _row;
+    private int _col;
 
     public SeerCellEvent(Object source, int id, String command, int row, int col) {
         super(source, id, command);

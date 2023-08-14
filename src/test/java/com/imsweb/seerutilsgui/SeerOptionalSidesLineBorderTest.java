@@ -15,6 +15,9 @@ import javax.swing.WindowConstants;
 public class SeerOptionalSidesLineBorderTest {
 
     public static void main(String[] args) {
+        SeerGuiUtils.setupGuiEnvForSeerProject();
+
+        SeerGuiUtils.setFontDelta(0);
         
         JFrame myFrame = new JFrame("TEST");
         myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

@@ -21,6 +21,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 
+@SuppressWarnings("unused")
 public class ComponentPairsMarker implements CaretListener, ComponentSyntax {
 
     private JTextComponent _pane;

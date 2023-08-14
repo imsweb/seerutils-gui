@@ -62,6 +62,7 @@ import com.imsweb.seerutilsgui.table.SeerColumn.SeerColumnWidthType;
  * Created on Aug 13, 2009 by depryf
  * @author depryf
  */
+@SuppressWarnings({"java:S1149", "unused"}) // using Vector
 public class SeerTable extends JTable {
 
     // default size for the rows
@@ -87,10 +88,10 @@ public class SeerTable extends JTable {
     public static final String TABLE_ACTION_PREVIOUS_COMP = "table-previous-comp";
 
     // column information for this table
-    protected List<SeerColumn> _colInfo;
+    protected transient List<SeerColumn> _colInfo;
 
     // sorter for this table (left null if no sorter)
-    protected TableRowSorter<TableModel> _sorter;
+    protected transient TableRowSorter<TableModel> _sorter;
 
     // which column should be sorted by default (-1 if no sorting)
     protected int _defaultSortColumn = -1;
@@ -102,7 +103,7 @@ public class SeerTable extends JTable {
     protected boolean _alternateColors = true;
 
     // cached table sizes
-    protected Map<String, Integer> _cachedLookupSize = new ConcurrentHashMap<>(new HashMap<>());
+    protected transient Map<String, Integer> _cachedLookupSize = new ConcurrentHashMap<>(new HashMap<>());
 
     // cached search regex
     private static final Pattern _TOKEN_REGEX = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
@@ -161,7 +162,7 @@ public class SeerTable extends JTable {
 
             this.getColumnModel().getColumn(i).setIdentifier(dto);
 
-            if (!dto.getVisible())
+            if (Boolean.FALSE.equals(dto.getVisible()))
                 this.getColumnModel().removeColumn(this.getColumnModel().getColumn(i));
 
             if (dto.getDefaultSort() != null) {
@@ -230,6 +231,7 @@ public class SeerTable extends JTable {
             this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean getAlternateRowColors() {
         return _alternateColors;
     }
@@ -284,8 +286,8 @@ public class SeerTable extends JTable {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
                     boolean hasSelectedColumn = SeerTable.this.getSelectedColumn() != -1;
                     SeerColumn info = hasSelectedColumn ? _colInfo.get(convertColumnIndexToModel(SeerTable.this.getSelectedColumn())) : null;
-                    Class<?> clazz = hasSelectedColumn ? info.getContentType() : null;
-                    if (!hasSelectedColumn || (!info.getEditable() && !SeerTableActionButton.class.equals(clazz) && !SeerTableCheckBox.class.equals(clazz)))
+                    Class<?> clazz = hasSelectedColumn && info != null ? info.getContentType() : null;
+                    if (!hasSelectedColumn || (info != null && !info.getEditable() && !SeerTableActionButton.class.equals(clazz) && !SeerTableCheckBox.class.equals(clazz)))
                         action.actionPerformed(new ActionEvent(e.getSource(), e.getID(), "default-action"));
                 }
             }
@@ -319,7 +321,7 @@ public class SeerTable extends JTable {
                         SeerTable.this.getCellEditor().stopCellEditing();
                     }
                 }
-                else if (info.getEditable())
+                else if (Boolean.TRUE.equals(info.getEditable()))
                     SeerTable.this.editCellAt(SeerTable.this.getSelectedRow(), SeerTable.this.getSelectedColumn());
                 else
                     action.actionPerformed(new ActionEvent(e.getSource(), e.getID(), "default-action"));
@@ -337,11 +339,6 @@ public class SeerTable extends JTable {
         return Collections.unmodifiableList(_colInfo);
     }
 
-    /* (non-Javadoc)
-     *
-     * Created on Aug 13, 2009 by depryf
-     * @see javax.swing.JTable#convertRowIndexToModel(int)
-     */
     @Override
     public int convertRowIndexToModel(int rowIndex) {
         if (rowIndex < 0 || rowIndex >= getRowCount())
@@ -349,16 +346,12 @@ public class SeerTable extends JTable {
         return super.convertRowIndexToModel(rowIndex);
     }
 
-    /* (non-Javadoc)
-     *
-     * Created on Aug 13, 2009 by depryf
-     * @see javax.swing.JTable#convertColumnIndexToModel(int)
-     */
     @Override
     public int convertColumnIndexToModel(int colIndex) {
-        int numInvisible = 0, numVisible = 0;
+        int numInvisible = 0;
+        int numVisible = 0;
         for (SeerColumn info : _colInfo) {
-            if (!info.getVisible())
+            if (Boolean.FALSE.equals(info.getVisible()))
                 numInvisible++;
             else {
                 if (numVisible == colIndex)
@@ -401,13 +394,14 @@ public class SeerTable extends JTable {
                 ((SeerTableStringRenderer)renderer).setHighlighting(searchText);
             final List<String> tokens = splitSearchString(searchText);
             setRowFilter(new RowFilter<Object, Object>() {
+                @SuppressWarnings("RedundantIfStatement")
                 @Override
                 public boolean include(Entry<?, ?> entry) {
                     boolean include = true;
                     if (!tokens.isEmpty())
                         include = false;
                     for (int i = 0; i < entry.getValueCount(); i++) {
-                        if (_colInfo.get(i).getVisible()) {
+                        if (Boolean.TRUE.equals(_colInfo.get(i).getVisible())) {
                             for (String token : tokens) {
                                 include |= ((String)entry.getValue(i)).toUpperCase().contains(token);
                                 if (include)
@@ -564,14 +558,12 @@ public class SeerTable extends JTable {
 
         boolean inScrollPane = this.getParent() instanceof JViewport;
 
-        //System.out.println(" **** Preferred Height");
         for (int col = 0; col < _colInfo.size(); col++) {
             SeerColumn dto = _colInfo.get(col);
 
-            if (dto.getVisible()) {
+            if (Boolean.TRUE.equals(dto.getVisible())) {
 
                 int colHeight = inScrollPane ? this.getTableHeader().getPreferredSize().height + 2 : 0;
-                //System.out.println(colHeight + " for " + dto.getHeader());
 
                 int colIdx = this.convertColumnIndexToView(col);
                 Class<?> clazz = this.getModel().getColumnClass(col);
@@ -579,7 +571,7 @@ public class SeerTable extends JTable {
                     Component comp = this.getDefaultRenderer(clazz).getTableCellRendererComponent(this, this.fetchValue(row, col), false, false, row, colIdx);
 
                     int cellHeight;
-                    if (dto.getLongText()) {
+                    if (Boolean.TRUE.equals(dto.getLongText())) {
                         JPanel panel = (JPanel)comp;
                         JTextArea area = (JTextArea)panel.getComponent(0);
                         area.setSize(allowedWidth, Integer.MAX_VALUE);
@@ -587,16 +579,14 @@ public class SeerTable extends JTable {
                     }
                     else
                         cellHeight = Math.max(comp.getPreferredSize().height, this.getRowHeight());
-                    //System.out.println(cellHeight + " for " + row + ", " + col);                    
+
                     colHeight += cellHeight;
                 }
 
-                //System.out.println("Total column: " + colHeight);
                 h = Math.max(h, colHeight);
             }
         }
 
-        //System.out.println("Returning " + h);
         return h;
     }
 
@@ -609,17 +599,15 @@ public class SeerTable extends JTable {
     public int getPreferredWidthNoScrolling() {
         int w = 0;
 
-        //System.out.println(" **** Preferred Width");
         for (int col = 0; col < _colInfo.size(); col++) {
             SeerColumn dto = _colInfo.get(col);
 
-            if (dto.getVisible()) {
+            if (Boolean.TRUE.equals(dto.getVisible())) {
                 TableCellRenderer renderer = getColumn(dto).getHeaderRenderer();
                 if (renderer == null)
                     renderer = getTableHeader().getDefaultRenderer();
                 Component header = renderer.getTableCellRendererComponent(this, dto.getHeader(), false, false, 0, 0);
                 int colWidth = header.getPreferredSize().width;
-                //System.out.println(colWidth + " for " + dto.getHeader());
 
                 int colIdx = this.convertColumnIndexToView(col);
                 Class<?> clazz = this.getModel().getColumnClass(col);
@@ -627,10 +615,9 @@ public class SeerTable extends JTable {
                     Component comp = this.getDefaultRenderer(clazz).getTableCellRendererComponent(this, this.fetchValue(row, col), false, false, row, colIdx);
 
                     int cellWidth = 0;
-                    if (dto.getLongText()) {
+                    if (Boolean.TRUE.equals(dto.getLongText())) {
                         JPanel panel = (JPanel)comp;
                         JTextArea area = (JTextArea)panel.getComponent(0);
-                        //System.out.println(" >> " + area.getText());
                         if (area.getText() != null)
                             for (String s : area.getText().split("\n"))
                                 cellWidth = Math.max(cellWidth, SwingUtilities.computeStringWidth(area.getFontMetrics(area.getFont()), s));
@@ -638,16 +625,13 @@ public class SeerTable extends JTable {
                     }
                     else
                         cellWidth = comp.getPreferredSize().width + 10;
-                    //System.out.println(cellWidth + " for " + row + ", " + col);
                     colWidth = Math.max(colWidth, cellWidth);
                 }
 
-                //System.out.println("Total column: " + colWidth);
                 w += colWidth;
             }
         }
 
-        //System.out.println("Returning " + w);
         return w;
     }
 
@@ -663,11 +647,12 @@ public class SeerTable extends JTable {
             return;
 
         // gather how much space we have once the specified sizes are gone
-        int freeSizes = 0, totalRequiredWith = 0;
+        int freeSizes = 0;
+        int totalRequiredWith = 0;
         Map<SeerColumn, Integer> dataDrivenSizes = new HashMap<>();
         for (int col = 0; col < _colInfo.size(); col++) {
             SeerColumn dto = _colInfo.get(col);
-            if (dto.getVisible()) {
+            if (Boolean.TRUE.equals(dto.getVisible())) {
                 if (dto.getWidth() == SeerColumnWidthType.FIXED && dto.getFixedSize() != null && dto.getFixedSize() > 0)
                     totalRequiredWith += dto.getFixedSize();
                 else if (dto.getWidth() == SeerColumnWidthType.MIN) {
@@ -677,7 +662,8 @@ public class SeerTable extends JTable {
                     if (dto.getLookup() != null) {
                         Integer size = _cachedLookupSize.get(dto.getLookup());
                         if (size == null || size <= 0) {
-                            int count = 0, maxSize = 0;
+                            int count = 0;
+                            int maxSize = 0;
                             for (Map.Entry<String, String> mapping : fetchLookup(dto.getLookup()).entrySet()) {
                                 if (mapping.getValue() != null)
                                     maxSize = Math.max(w, SeerTableStringRenderer.getValueWidth(mapping.getValue(), g));
@@ -718,7 +704,7 @@ public class SeerTable extends JTable {
         int freeSize = freeSizes == 0 ? 0 : (tableWidth - totalRequiredWith) / freeSizes;
 
         for (SeerColumn dto : _colInfo) {
-            if (dto.getVisible()) {
+            if (Boolean.TRUE.equals(dto.getVisible())) {
                 TableColumn col = getColumn(dto);
 
                 if (dto.getFixedSize() != null)
@@ -790,12 +776,12 @@ public class SeerTable extends JTable {
         /**
          * Columns Info
          */
-        private List<SeerColumn> _modelColInfo;
+        private final List<SeerColumn> _modelColInfo;
 
         /**
          * Data
          */
-        private Vector<Vector<Object>> _data;
+        private final transient Vector<Vector<Object>> _data;
 
         /**
          * Constructor

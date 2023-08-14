@@ -25,14 +25,14 @@ public class SeerProgressDialog<T, V> extends JDialog {
     private static final String _SPINNING_PANEL_ID = "card-with-spinner";
 
     // global GUI components
-    private SeerCardPanel _progressOrSpinnerPnl;
-    private SeerProgressPanel _progressPnl;
+    private final SeerCardPanel _progressOrSpinnerPnl;
+    private final SeerProgressPanel _progressPnl;
     private String _progressText;
-    private SeerSpinningPanel _spinnerPnl;
+    private final SeerSpinningPanel _spinnerPnl;
     private String _spinnerText;
     private JButton _cancelBtn;
 
-    private SwingWorker<T, V> _worker;
+    private transient SwingWorker<T, V> _worker;
 
     // is the worker canceled?
     private boolean _canceled = false;
@@ -82,8 +82,7 @@ public class SeerProgressDialog<T, V> extends JDialog {
         if (showCancel) {
             JPanel cancelBtnPnl = SeerGuiUtils.createPanel(new FlowLayout(FlowLayout.CENTER));
             cancelBtnPnl.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-            _cancelBtn = new JButton("Cancel");
-            _cancelBtn.addActionListener(e -> cancel());
+            _cancelBtn = SeerGuiUtils.createButton("Cancel", "cancel", "Cancel", e -> cancel());
             cancelBtnPnl.add(_cancelBtn);
             add(cancelBtnPnl, BorderLayout.SOUTH);
         }

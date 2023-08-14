@@ -14,13 +14,16 @@ public class SeerPopupMenuAdapter implements PopupMenuListener {
 
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        // no default
     }
 
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        // no default
     }
 
     @Override
     public void popupMenuCanceled(PopupMenuEvent e) {
+        // no default
     }
 }

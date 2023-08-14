@@ -29,6 +29,9 @@ public class SeerProgressPanelTest {
 
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
+
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame myFrame = new JFrame("SeerProgressPanelTest");
         myFrame.setLayout(new BorderLayout());
         myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

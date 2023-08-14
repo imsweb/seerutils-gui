@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 
 public class IconTest {
     public static void main(String[] args){
-        IconTest myIcon = new IconTest();
         File dir1 = new File(".");
         System.out.println("current directory: " + dir1.getAbsolutePath());
 
@@ -24,9 +23,4 @@ public class IconTest {
         
         
     }
-    public ImageIcon createIcon(String icon, String path){
-        return new ImageIcon(path + icon);
-    }
-
-    
 }

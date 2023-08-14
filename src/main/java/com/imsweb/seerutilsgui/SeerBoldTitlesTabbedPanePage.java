@@ -13,10 +13,20 @@ import javax.swing.border.CompoundBorder;
 
 public class SeerBoldTitlesTabbedPanePage extends JPanel {
 
+    /**
+     * Constructor.
+     * @param parent parent component
+     */
     public SeerBoldTitlesTabbedPanePage(SeerBoldTitlesTabbedPane parent) {
         this(parent, Color.GRAY);
     }
 
+    /**
+     * Constructor.
+     * @param parent parent component
+     * @param borderColor border color
+     */
+    @SuppressWarnings("unused")
     public SeerBoldTitlesTabbedPanePage(SeerBoldTitlesTabbedPane parent, Color borderColor) {
         super(new BorderLayout());
 

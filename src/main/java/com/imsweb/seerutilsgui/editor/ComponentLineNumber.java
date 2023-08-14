@@ -26,6 +26,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 
+@SuppressWarnings("unused")
 public class ComponentLineNumber extends JComponent implements ComponentSyntax, CaretListener {
 
     public static final int MARGIN = 5;

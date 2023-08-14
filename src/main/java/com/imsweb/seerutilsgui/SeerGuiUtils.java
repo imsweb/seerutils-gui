@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
 import java.awt.Insets;
 import java.awt.LayoutManager;
@@ -25,14 +26,16 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -46,6 +49,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
+import javax.swing.RootPaneContainer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
@@ -53,22 +57,8 @@ import javax.swing.border.Border;
 /**
  * Generic GUI utility class for the SEER projects.
  */
-@SuppressWarnings("MagicConstant")
+@SuppressWarnings("unused")
 public final class SeerGuiUtils {
-
-    public static final String KEY_VERSION = "build.version";
-    public static final String KEY_COMMIT_ID = "commit.id";
-    public static final String KEY_COMMIT_MESSAGE = "commit.message";
-
-    /**
-     * Cached build properties for this project
-     */
-    private static Map<String, String> _BUILD_PROPS = new HashMap<>();
-
-    // initialize all the build property files into the shared _BUILD_PROPS map
-    static {
-        addBuildProperties("seerutils-gui-build.properties");
-    }
 
     /**
      * A few color constants
@@ -88,59 +78,20 @@ public final class SeerGuiUtils {
     /**
      * Cached windows
      */
-    private static Map<String, SeerUniqueWindow> _CACHED_WINDOWS = new HashMap<>();
+    private static final Map<String, SeerUniqueWindow> _CACHED_WINDOWS = new HashMap<>();
 
     /**
      * Cached windows size and location
      */
-    private static Map<String, String> _WINDOWS_INFO = new HashMap<>();
+    private static final Map<String, String> _WINDOWS_INFO = new HashMap<>();
 
     /**
-     * Private constructor, no instanciation!
+     * Private constructor, no instantiation!
      * <p/>
      * Created on Jan 30, 2010 by Fabian
      */
     private SeerGuiUtils() {
-    }
-
-    /**
-     * Adds the passed resource to the static map of build properties
-     * <p/>
-     * @param resource resource to add
-     */
-    private static void addBuildProperties(String resource) {
-        Properties props = new Properties();
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        if (is != null) {
-            try {
-                props.load(is);
-                is.close();
-            }
-            catch (IOException e1) {
-                props.clear();
-            }
-        }
-
-        for (Map.Entry<Object, Object> entry : props.entrySet())
-            _BUILD_PROPS.put((String)entry.getKey(), (String)entry.getValue());
-    }
-
-    /**
-     * Returns the requested build property for the SEER*Utils library.
-     * <p/>
-     * Created on Feb 8, 2011 by depryf
-     * @return a <code>Map</code> containing all the build properties
-     */
-    public static String getBuildProperty(String prop) {
-        return _BUILD_PROPS.get(prop);
-    }
-
-    /**
-     * Returns the current version of the SEER*Utils library.
-     * @return the current version of the SEER*Utils library
-     */
-    public static String getBuildVersion() {
-        return getBuildProperty(KEY_VERSION);
+        // utility class
     }
 
     /**
@@ -179,6 +130,48 @@ public final class SeerGuiUtils {
     }
 
     /**
+     * Applies a global font delta to the system.
+     * @param delta delta to apply
+     */
+    public static void setFontDelta(int delta) {
+        for (Object key : Collections.list(UIManager.getDefaults().keys())) {
+            if (key.toString().endsWith(".font") || key.toString().endsWith("Font")) {
+                try {
+                    Font font = UIManager.getFont(key);
+                    UIManager.put(key, font.deriveFont(font.getStyle(), (float)font.getSize() + delta));
+                }
+                catch (RuntimeException ex) {
+                    // ignored, the font won't be set, there isn't much we can do about it
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the font delta that was applied globally.
+     */
+    public static int getFontDelta() {
+        return createLabel("").getFont().getSize() - 11; // 11 is the default font size...
+    }
+
+    /**
+     * Returns the "best" monospace font that the system supports.
+     */
+    public static Font getMonospaceFont() {
+        Set<String> availableFonts = new HashSet<>(Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
+
+        int defaultFontDelta = getFontDelta();
+
+        if (availableFonts.contains("Courier New"))
+            return new Font("Courier New", Font.PLAIN, 12 + defaultFontDelta);
+
+        if (availableFonts.contains("Courier"))
+            return new Font("Courier", Font.PLAIN, 12 + defaultFontDelta);
+
+        return new Font("Monospaced", Font.PLAIN, 13 + defaultFontDelta);
+    }
+
+    /**
      * Opens folder.
      * <p/>
      * Created on Jan 6, 2012 by murphyr
@@ -211,7 +204,7 @@ public final class SeerGuiUtils {
     // *****************************************************************************************
 
     /**
-     * Tries to get the cached window correpsonding to the requested ID and to show it.
+     * Tries to get the cached window corresponding to the requested ID and to show it.
      * <p/>
      * Created on Aug 11, 2010 by depryf
      * @param windowId requested Window ID
@@ -542,8 +535,8 @@ public final class SeerGuiUtils {
     }
 
     public static ImageIcon createIcon(String icon, String path) {
-        return new ImageIcon(Thread.currentThread().getContextClassLoader().getResource(path + icon));
-        //return new ImageIcon(path + icon);
+        URL url = Thread.currentThread().getContextClassLoader().getResource(path + icon);
+        return url == null ? null : new ImageIcon(url);
     }
 
     public static JPanel createPanel() {
@@ -557,31 +550,17 @@ public final class SeerGuiUtils {
         return panel;
     }
 
-    public static JPanel createContentPanel(JFrame frame) {
-        return createContentPanel(frame, 10);
+    public static JPanel createContentPanel(RootPaneContainer parent) {
+        return createContentPanel(parent, 10);
     }
 
-    public static JPanel createContentPanel(JFrame frame, int border) {
+    public static JPanel createContentPanel(RootPaneContainer parent, int border) {
         JPanel contentPnl = createPanel();
         contentPnl.setOpaque(true);
         contentPnl.setBackground(COLOR_APPLICATION_BACKGROUND);
         contentPnl.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(contentPnl, BorderLayout.CENTER);
-        return contentPnl;
-    }
-
-    public static JPanel createContentPanel(JDialog dlg) {
-        return createContentPanel(dlg, 10);
-    }
-
-    public static JPanel createContentPanel(JDialog dlg, int border) {
-        JPanel contentPnl = createPanel();
-        contentPnl.setOpaque(true);
-        contentPnl.setBackground(COLOR_APPLICATION_BACKGROUND);
-        contentPnl.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        dlg.getContentPane().setLayout(new BorderLayout());
-        dlg.getContentPane().add(contentPnl, BorderLayout.CENTER);
+        parent.getContentPane().setLayout(new BorderLayout());
+        parent.getContentPane().add(contentPnl, BorderLayout.CENTER);
         return contentPnl;
     }
 
@@ -698,7 +677,6 @@ public final class SeerGuiUtils {
         item.setActionCommand(action);
         if (listener != null)
             item.addActionListener(listener);
-
         item.setName(action);
 
         return item;

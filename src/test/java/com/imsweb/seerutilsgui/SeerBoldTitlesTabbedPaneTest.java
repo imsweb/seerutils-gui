@@ -29,9 +29,11 @@ public class SeerBoldTitlesTabbedPaneTest {
     public static final int BTN_ANCHOR = GridBagConstraints.FIRST_LINE_END;
 
     public static void main(String[] args) {
+        SeerGuiUtils.setupGuiEnvForSeerProject();
+
+        SeerGuiUtils.setFontDelta(0);
 
         //Frame and contentPnl setup
-        SeerGuiUtils.setupGuiEnvForSeerProject();
         final JFrame frame = new JFrame("Test");
         //frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -395,8 +397,6 @@ public class SeerBoldTitlesTabbedPaneTest {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
-                //pane.disableAllPages();
-                //pane.disablePage("Page 2");
                 pane.disablePage(1);
                 frame.removeComponentListener(this);
             }
@@ -404,8 +404,6 @@ public class SeerBoldTitlesTabbedPaneTest {
     }
 
     private static class TestPage extends SeerBoldTitlesTabbedPanePage {
-
-        private int _idx;
 
         public TestPage(SeerBoldTitlesTabbedPane parent, int idx) {
             super(parent);
@@ -425,12 +423,7 @@ public class SeerBoldTitlesTabbedPaneTest {
                     "When removed by Name, only that one tab will be removed.<br/>" +
                     "2. get page by name method: getPage(String name)seems not working" +
                     "3.</html>", Font.PLAIN, 16, Color.RED), BorderLayout.SOUTH);
-
-            _idx = idx;
-        }
-
-        public int getIdx() {
-            return _idx;
+            ;
         }
     }
 }

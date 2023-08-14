@@ -18,6 +18,8 @@ public class SeerAutoCompleteComboBoxTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(300, 300));
@@ -30,7 +32,7 @@ public class SeerAutoCompleteComboBoxTest {
         SeerAutoCompleteComboBox box = new SeerAutoCompleteComboBox(list);
         contentPnl.add(box, BorderLayout.NORTH);
 
-        // just so the combo box can loose focus
+        // just so the combo box can lose focus
         contentPnl.add(new JTextField(), BorderLayout.SOUTH);
 
         SeerGuiUtils.showAndPosition(frame, null);

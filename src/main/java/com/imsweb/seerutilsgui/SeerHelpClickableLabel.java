@@ -11,11 +11,13 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
+@SuppressWarnings("unused")
 public class SeerHelpClickableLabel extends SeerClickableLabel {
 
     private SeerHelpDialog _dlg;
 
-    private boolean _showUndecorated, _showingUndecorated;
+    private boolean _showUndecorated;
+    private boolean _showingUndecorated;
 
     /**
      * Constructor.
@@ -89,6 +91,7 @@ public class SeerHelpClickableLabel extends SeerClickableLabel {
         _showingUndecorated = false;
     }
 
+    @SuppressWarnings("java:S1172") // unused param, don't want to break calling code
     protected SeerHelpClickableLabel(final Window parent, String label, final String helpId, String dlgTitle, ImageIcon icon) {
         super(label);
 

@@ -23,6 +23,8 @@ public class SeerTwoListsSelectionPanelTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(600, 400));

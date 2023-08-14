@@ -9,6 +9,7 @@ package com.imsweb.seerutilsgui;
  * Created on Jan 30, 2010 by depryf
  * @author depryf
  */
+@SuppressWarnings("unused")
 public interface SeerWindow {
 
     /**

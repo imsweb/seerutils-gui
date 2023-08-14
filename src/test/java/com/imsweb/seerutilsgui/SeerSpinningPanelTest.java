@@ -15,12 +15,14 @@ import java.util.List;
 
 public class SeerSpinningPanelTest {
 
-    private static List<SeerSpinningPanel> _PNL = new ArrayList<>();
+    private static final List<SeerSpinningPanel> _PNL = new ArrayList<>();
 
     private static boolean _IS_SPINNING = true;
 
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
+
+        SeerGuiUtils.setFontDelta(0);
 
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

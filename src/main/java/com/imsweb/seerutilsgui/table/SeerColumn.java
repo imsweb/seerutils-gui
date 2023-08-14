@@ -5,6 +5,7 @@ package com.imsweb.seerutilsgui.table;
 
 import java.io.Serializable;
 
+@SuppressWarnings("unused")
 public class SeerColumn implements Serializable {
 
     public enum SeerColumnWidthType {

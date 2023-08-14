@@ -17,11 +17,13 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+@SuppressWarnings("unused")
 public class SeerHelpButton extends JButton {
 
     private SeerHelpDialog _dlg;
 
-    private boolean _showUndecorated, _showingUndecorated;
+    private boolean _showUndecorated;
+    private boolean _showingUndecorated;
 
     /**
      * Constructor.
@@ -95,6 +97,7 @@ public class SeerHelpButton extends JButton {
         _showingUndecorated = false;
     }
 
+    @SuppressWarnings("java:S1172") // extra param (don't want to break all code using this constructor)
     protected SeerHelpButton(final Window parent, final JComponent ancestor, final String helpId, String dlgTitle, ImageIcon icon) {
 
         this.setOpaque(false);

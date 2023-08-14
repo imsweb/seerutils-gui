@@ -13,11 +13,14 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 
+@SuppressWarnings("unused")
 public class SeerSpinningPanel extends JPanel {
 
-    private SeerSpinner _spinner;
+    private final SeerSpinner _spinner;
 
-    private JLabel _topLbl, _firstBottomLbl, _secondBottomLbl;
+    private JLabel _topLbl;
+    private JLabel _firstBottomLbl;
+    private JLabel _secondBottomLbl;
 
     public SeerSpinningPanel(int size, String topLbl, String bottomLbl1, String bottomLbl2) {
         this(size, topLbl, bottomLbl1, bottomLbl2, 20, 20, 10);
@@ -34,7 +37,7 @@ public class SeerSpinningPanel extends JPanel {
         if (topLbl != null) {
             JPanel searchTopPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchTopPnl.setOpaque(false);
-            _topLbl = new JLabel(topLbl);
+            _topLbl = SeerGuiUtils.createLabel(topLbl);
             searchTopPnl.add(_topLbl);
             searchPnl.add(searchTopPnl);
             searchPnl.add(Box.createVerticalStrut(topGap));
@@ -47,7 +50,7 @@ public class SeerSpinningPanel extends JPanel {
             searchPnl.add(Box.createVerticalStrut(bottomGap1));
             JPanel searchBottomPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchBottomPnl.setOpaque(false);
-            _firstBottomLbl = new JLabel(bottomLbl1);
+            _firstBottomLbl = SeerGuiUtils.createLabel(bottomLbl1);
             searchBottomPnl.add(_firstBottomLbl);
             searchPnl.add(searchBottomPnl);
         }
@@ -56,7 +59,7 @@ public class SeerSpinningPanel extends JPanel {
             searchPnl.add(Box.createVerticalStrut(bottomGap2));
             JPanel searchBottomPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchBottomPnl.setOpaque(false);
-            _secondBottomLbl = new JLabel(bottomLbl2);
+            _secondBottomLbl = SeerGuiUtils.createLabel(bottomLbl2);
             searchBottomPnl.add(_secondBottomLbl);
             searchPnl.add(searchBottomPnl);
         }
@@ -67,7 +70,7 @@ public class SeerSpinningPanel extends JPanel {
 
         this.add(searchWrapperPnl, BorderLayout.CENTER);
 
-        SwingUtilities.invokeLater(() -> _spinner.startSpinning());
+        SwingUtilities.invokeLater(_spinner::startSpinning);
     }
 
     public void startSpinning() {

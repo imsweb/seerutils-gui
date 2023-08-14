@@ -16,6 +16,8 @@ public class SeerClickableLabelTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame frame = new JFrame("Test");
         frame.setPreferredSize(new Dimension(500, 200));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

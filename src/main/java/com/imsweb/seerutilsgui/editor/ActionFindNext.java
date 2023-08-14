@@ -7,9 +7,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.text.TextAction;
 
+@SuppressWarnings("unused")
 public class ActionFindNext extends TextAction {
 
-    private SearchDialog _searchDlg;
+    private final SearchDialog _searchDlg;
 
     public ActionFindNext(SearchDialog searchDlg) {
         super("FIND_NEXT");

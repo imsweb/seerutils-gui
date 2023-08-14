@@ -20,10 +20,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import com.imsweb.seerutilsgui.SeerMultiSelectComboBox.SeerMultiSelectCheckBoxValue;
+
 /**
  * This class is a special <b>JComboBox</b> that displays its items as checkboxes and allow several of them to be selected.
  */
-public class SeerMultiSelectComboBox<T> extends JComboBox {
+public class SeerMultiSelectComboBox<T> extends JComboBox<SeerMultiSelectCheckBoxValue<T>> {
 
     // default text when no checkbox is selected
     public static final String NO_SELECTION_TEXT = "< No Value Selected >";
@@ -41,23 +43,25 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
     public static final Color ONE_SELECTION_COLOR = Color.BLACK;
 
     // the text and colors to use for the JTextField
-    private String _multSelectedTxt, _noSelectedTxt;
-    private Color _multSelectedColor, _noSelectedColor, _oneSelectedColor;
+    private String _multiSelectedTxt;
+    private String _noSelectedTxt;
+    private Color _multiSelectedColor;
+    private Color _noSelectedColor;
+    private Color _oneSelectedColor;
 
     // the instances of the checkboxes
-    private List<SeerMultiSelectCheckBoxDto> _checkboxes;
+    private final List<SeerMultiSelectCheckBoxValue<T>> _checkboxes;
 
     /**
      * Constructor.
      * @param items list of items to display as checkboxes
      */
-    @SuppressWarnings("unchecked")
     public SeerMultiSelectComboBox(List<T> items) {
 
         // initialize a bunch of internal variables
-        _multSelectedTxt = MULTIPLE_SELECTION_TEXT;
+        _multiSelectedTxt = MULTIPLE_SELECTION_TEXT;
         _noSelectedTxt = NO_SELECTION_TEXT;
-        _multSelectedColor = MULTIPLE_SELECTION_COLOR;
+        _multiSelectedColor = MULTIPLE_SELECTION_COLOR;
         _noSelectedColor = NO_SELECTION_COLOR;
         _oneSelectedColor = ONE_SELECTION_COLOR;
         _checkboxes = new ArrayList<>();
@@ -65,17 +69,17 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
         // it's important to keep track of the longest value in the checkboxes to properly set the preferred size...
         int maxWidth = 0;
         for (T item : items) {
-            SeerMultiSelectCheckBoxDto checkBoxDto = new SeerMultiSelectCheckBoxDto(item);
-            _checkboxes.add(checkBoxDto);
-            addItem(checkBoxDto);
-            maxWidth = Math.max(maxWidth, checkBoxDto.getPreferredSize().width);
+            SeerMultiSelectCheckBoxValue<T> checkBoxValue = new SeerMultiSelectCheckBoxValue<>(item);
+            _checkboxes.add(checkBoxValue);
+            addItem(checkBoxValue);
+            maxWidth = Math.max(maxWidth, checkBoxValue.getPreferredSize().width);
         }
 
         // we will use our own renderer (obviously)
         setRenderer(new CheckBoxRenderer(_checkboxes));
 
         // also take into account the controls, and the selection text to get the maximum width
-        maxWidth = Math.max(maxWidth, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _multSelectedTxt) + 25);
+        maxWidth = Math.max(maxWidth, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _multiSelectedTxt) + 25);
         maxWidth = Math.max(maxWidth, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _noSelectedTxt) + 25);
 
         // set the preferred width
@@ -102,7 +106,7 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
      */
     public List<T> getSelectedItems() {
         List<T> selectedItems = new ArrayList<>();
-        for (SeerMultiSelectCheckBoxDto dto : _checkboxes)
+        for (SeerMultiSelectCheckBoxValue<T> dto : _checkboxes)
             if (dto.getItem() != null && dto.isSelected())
                 selectedItems.add(dto.getItem());
         return selectedItems;
@@ -113,10 +117,10 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
      * @param items items to select
      */
     public void setSelectedItems(List<T> items) {
-        for (SeerMultiSelectCheckBoxDto checkBoxDto : _checkboxes)
+        for (SeerMultiSelectCheckBoxValue<T> checkBoxDto : _checkboxes)
             checkBoxDto.setSelected(false);
         for (T option : items) {
-            for (SeerMultiSelectCheckBoxDto dto : _checkboxes) {
+            for (SeerMultiSelectCheckBoxValue<T> dto : _checkboxes) {
                 if (dto.getItem() != null && dto.getItem().equals(option)) {
                     dto.setSelected(true);
                     break;
@@ -131,10 +135,10 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
      * @param text text to use
      */
     public void setMultipleSelectionText(String text) {
-        _multSelectedTxt = text;
+        _multiSelectedTxt = text;
         // re-adjust the preferred size so the full label is always visible...
         Dimension dim = this.getPreferredSize();
-        this.setPreferredSize(new Dimension(Math.max(dim.width, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _multSelectedTxt) + 25), dim.height));
+        this.setPreferredSize(new Dimension(Math.max(dim.width, SwingUtilities.computeStringWidth(getFontMetrics(getFont()), _multiSelectedTxt) + 25), dim.height));
     }
 
     /**
@@ -153,7 +157,7 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
      * @param color color to use
      */
     public void setMultipleSelectionForeground(Color color) {
-        _multSelectedColor = color;
+        _multiSelectedColor = color;
     }
 
     /**
@@ -178,7 +182,7 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
         if (index < 0 || index >= _checkboxes.size())
             return;
 
-        SeerMultiSelectCheckBoxDto cb = _checkboxes.get(index);
+        SeerMultiSelectCheckBoxValue<T> cb = _checkboxes.get(index);
         if (cb.getItem() != null) // null means a separator; this should never happen, but better safe than sorry
             cb.setSelected(!cb.isSelected());
 
@@ -197,13 +201,14 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
     /**
      * With so much customization in the rendering, we obviously need to use our own renderer object! :-)
      */
-    private class CheckBoxRenderer implements ListCellRenderer {
+    @SuppressWarnings({"java:S3740", "rawtypes"}) // some parametrization waring, no idea how to resolve it, doesn't see to cause any real issue...
+    private class CheckBoxRenderer implements ListCellRenderer<SeerMultiSelectCheckBoxValue> {
 
         private final BasicComboBoxRenderer _defaultRenderer = new BasicComboBoxRenderer();
-        private final List<SeerMultiSelectCheckBoxDto> _componentList;
+        private final List<SeerMultiSelectCheckBoxValue<T>> _componentList;
         private final JPanel _separator;
 
-        public CheckBoxRenderer(List<SeerMultiSelectCheckBoxDto> checkboxes) {
+        public CheckBoxRenderer(List<SeerMultiSelectCheckBoxValue<T>> checkboxes) {
             _componentList = checkboxes;
             _separator = new JPanel();
             _separator.setOpaque(true);
@@ -213,12 +218,12 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<? extends SeerMultiSelectCheckBoxValue> list, SeerMultiSelectCheckBoxValue value, int index, boolean isSelected, boolean cellHasFocus) {
             Component result = null;
 
-            // regular indexes (the check boxes)
+            // regular indexes (the checkboxes)
             if (index >= 0 && index < _componentList.size()) {
-                SeerMultiSelectCheckBoxDto checkbox = _componentList.get(index);
+                SeerMultiSelectCheckBoxValue<T> checkbox = _componentList.get(index);
                 if (checkbox.getItem() != null) {
                     checkbox.setBackground(isSelected ? SeerList.COLOR_LIST_ROW_SELECTED : Color.WHITE);
                     checkbox.setForeground(Color.BLACK);
@@ -231,7 +236,7 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
             if (index == -1) { // -1 is the combobox text
                 String str;
                 List<T> selectedItems = getSelectedItems();
-                if (selectedItems == null || selectedItems.size() == 0) {
+                if (selectedItems == null || selectedItems.isEmpty()) {
                     str = _noSelectedTxt;
                     SeerMultiSelectComboBox.this.setForeground(_noSelectedColor);
                 }
@@ -240,8 +245,8 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
                     SeerMultiSelectComboBox.this.setForeground(_oneSelectedColor);
                 }
                 else {
-                    str = _multSelectedTxt;
-                    SeerMultiSelectComboBox.this.setForeground(_multSelectedColor);
+                    str = _multiSelectedTxt;
+                    SeerMultiSelectComboBox.this.setForeground(_multiSelectedColor);
                 }
 
                 result = _defaultRenderer.getListCellRendererComponent(list, str, index, isSelected, cellHasFocus);
@@ -254,16 +259,16 @@ public class SeerMultiSelectComboBox<T> extends JComboBox {
     /**
      * DTO representing the items as checkboxes
      */
-    private class SeerMultiSelectCheckBoxDto extends JCheckBox implements Serializable {
+    public static class SeerMultiSelectCheckBoxValue<V> extends JCheckBox implements Serializable {
 
-        private transient T _item;
+        private final transient V _item;
 
-        public SeerMultiSelectCheckBoxDto(T item) {
+        public SeerMultiSelectCheckBoxValue(V item) {
             super(item == null ? null : item.toString());
             _item = item;
         }
 
-        public T getItem() {
+        public V getItem() {
             return _item;
         }
     }

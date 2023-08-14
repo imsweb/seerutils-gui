@@ -15,9 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+@SuppressWarnings("unused")
 public class SeerProgressPanel extends JPanel {
 
-    private JLabel _topLbl, _firstBottomLbl, _secondBottomLbl;
+    private JLabel _topLbl;
+    private JLabel _firstBottomLbl;
+    private JLabel _secondBottomLbl;
     private final JProgressBar _progressBar;
 
     public SeerProgressPanel(int min, int max, int size, String topLbl, String bottomLbl1, String bottomLbl2) {
@@ -35,7 +38,7 @@ public class SeerProgressPanel extends JPanel {
         if (topLbl != null) {
             JPanel searchTopPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchTopPnl.setOpaque(false);
-            _topLbl = new JLabel(topLbl);
+            _topLbl = SeerGuiUtils.createLabel(topLbl);
             searchTopPnl.add(_topLbl);
             searchPnl.add(searchTopPnl);
             searchPnl.add(Box.createVerticalStrut(topGap));
@@ -59,7 +62,7 @@ public class SeerProgressPanel extends JPanel {
             searchPnl.add(Box.createVerticalStrut(bottomGap1));
             JPanel searchBottomPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchBottomPnl.setOpaque(false);
-            _firstBottomLbl = new JLabel(bottomLbl1);
+            _firstBottomLbl = SeerGuiUtils.createLabel(bottomLbl1);
             searchBottomPnl.add(_firstBottomLbl);
             searchPnl.add(searchBottomPnl);
         }
@@ -68,7 +71,7 @@ public class SeerProgressPanel extends JPanel {
             searchPnl.add(Box.createVerticalStrut(bottomGap2));
             JPanel searchBottomPnl = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             searchBottomPnl.setOpaque(false);
-            _secondBottomLbl = new JLabel(bottomLbl2);
+            _secondBottomLbl = SeerGuiUtils.createLabel(bottomLbl2);
             searchBottomPnl.add(_secondBottomLbl);
             searchPnl.add(searchBottomPnl);
         }

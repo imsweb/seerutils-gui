@@ -23,6 +23,7 @@ import javax.swing.text.TextAction;
  * SmartIndentation is inserting the same amount of spaces as
  * the line above.  May not be too smart, but good enough.
  */
+@SuppressWarnings("unused")
 public class ActionSmartIndent extends TextAction {
 
     public ActionSmartIndent() {

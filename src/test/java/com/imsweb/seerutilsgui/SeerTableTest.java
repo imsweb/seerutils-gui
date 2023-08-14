@@ -45,6 +45,8 @@ public class SeerTableTest {
     public static void main(String[] args) throws Exception {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         final JFrame frame = new JFrame("SEER Table Demo");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1200, 800));

@@ -21,6 +21,8 @@ public class SeerCardPanelTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame myFrame = new JFrame("SeerCardPanelTest");
         myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         myFrame.setPreferredSize(new Dimension(600, 400));

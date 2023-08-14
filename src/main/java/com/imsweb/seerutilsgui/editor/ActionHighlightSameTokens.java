@@ -14,11 +14,12 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
 
+@SuppressWarnings("unused")
 public class ActionHighlightSameTokens extends TextAction implements CaretListener {
 
-    private Set<LexerToken.TokenType> _tokenTypes = new HashSet<>();
+    private final Set<LexerToken.TokenType> _tokenTypes = new HashSet<>();
 
-    private SyntaxUtils.SimpleMarker _marker;
+    private final transient SyntaxUtils.SimpleMarker _marker;
 
     public ActionHighlightSameTokens() {
         super("HIGHTLIGHT_SAME_TOKENS");

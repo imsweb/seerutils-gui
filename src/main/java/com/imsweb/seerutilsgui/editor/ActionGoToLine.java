@@ -8,9 +8,10 @@ import javax.swing.text.TextAction;
 
 import com.imsweb.seerutilsgui.SeerGuiUtils;
 
+@SuppressWarnings("unused")
 public class ActionGoToLine extends TextAction {
 
-    private Window _parent;
+    private final Window _parent;
 
     public ActionGoToLine(Window parent) {
         super("GO_TO_LINE");

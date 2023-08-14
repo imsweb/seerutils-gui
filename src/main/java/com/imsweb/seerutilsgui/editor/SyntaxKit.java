@@ -18,6 +18,7 @@ import javax.swing.text.Segment;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 
+@SuppressWarnings("unused")
 public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
 
     /**
@@ -32,12 +33,12 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
     /**
      * Current style for this editor
      */
-    private transient SyntaxStyles _style;
+    private final transient SyntaxStyles _style;
 
     /**
      * Lexer (depends on the type of editor)
      */
-    private transient Lexer _lexer;
+    private final transient Lexer _lexer;
 
     /**
      * Constructor.

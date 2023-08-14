@@ -54,7 +54,7 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
     private final Window _owner;
 
     /**
-     * Whether or not the mouse is on the button
+     * Whether the mouse is on the button
      */
     private boolean _mouseOnButton;
 
@@ -113,15 +113,19 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
                 HTMLDocument doc = (HTMLDocument)(super.createDefaultDocument());
                 doc.setAsynchronousLoadPriority(-1);
 
-                // bullets look terrible in Swing, let's replace them with an image
                 StyleSheet styleSheet = getStyleSheet();
+
+                // bullets look terrible in Swing, let's replace them with an image
                 styleSheet.addRule("ul {list-style-image: url(bullet.png);}");
+
+                // adjust the font if needed
+                styleSheet.addRule("body { font-family: Serif; font-size: " + (14 + Math.floorDiv(SeerGuiUtils.getFontDelta(), 2)) + "pt; }");
 
                 return doc;
             }
         });
 
-        // let's set the base URL to the icons folder, that way images can very easily be added without any prefix
+        // let's set the base URL to the icon folder, that way images can very easily be added without any prefix
         ((HTMLDocument)_pane.getDocument()).setBase(Thread.currentThread().getContextClassLoader().getResource("icons/"));
 
         _pane.setEditable(false);
@@ -218,6 +222,7 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
             _focusListener = new FocusListener() {
                 @Override
                 public void focusGained(FocusEvent e) {
+                    // nothing to do
                 }
 
                 @Override
@@ -377,14 +382,15 @@ public class SeerHelpDialog extends JDialog implements SeerUniqueWindow {
      * @param relativeTo relative to component
      */
     public void setRelativeComponent(JComponent relativeTo, Window parent) {
+        int defaultFontDelta = SeerGuiUtils.getFontDelta();
 
         // first calculate preferred size based on content (note that this size can changed based on the relative component, see calculatePosition())
         this.pack();
-        int w = Math.min(Math.min(980, parent.getWidth() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().width + 20));
-        int h = Math.min(Math.min(980, parent.getHeight() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().height + 20));
+        int w = Math.min(Math.min(980, parent.getWidth() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().width + 20 + defaultFontDelta));
+        int h = Math.min(Math.min(980, parent.getHeight() - 75), Math.min(680, _pane.getPreferredScrollableViewportSize().height + 20 + defaultFontDelta));
         this.setPreferredSize(new Dimension(w, h));
 
-        // then caluculate the preferred location
+        // then calculate the preferred location
         this.pack();
         this.setLocation(calculatePosition(relativeTo, parent));
     }

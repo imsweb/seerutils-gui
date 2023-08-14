@@ -5,8 +5,6 @@ package com.imsweb.seerutilsgui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -18,8 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.CaretListener;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.imsweb.seerutilsgui.editor.ActionFind;
 import com.imsweb.seerutilsgui.editor.SearchDialog;
 import com.imsweb.seerutilsgui.editor.SyntaxKit;
@@ -29,6 +25,8 @@ public class SearchDialogTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(800, 600));
@@ -37,7 +35,7 @@ public class SearchDialogTest {
 
         JEditorPane pane = new JEditorPane();
         pane.setEditorKit(new SyntaxKit(SyntaxKit.SYNTAX_TYPE_PLAIN, null));
-        pane.setFont(getMonospaceFont());
+        pane.setFont(SeerGuiUtils.getMonospaceFont());
         pane.setEditable(false);
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < 100; i++)
@@ -53,12 +51,6 @@ public class SearchDialogTest {
         registerAction(pane, new ActionFind(searchDlg), KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
 
         SeerGuiUtils.showAndPosition(frame, null);
-    }
-
-    private static Font getMonospaceFont() {
-        if (ArrayUtils.contains(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(), "Courier New"))
-            return new Font("Courier New", Font.PLAIN, 13);
-        return new Font("Monospaced", Font.PLAIN, 13);
     }
 
     private static void registerAction(JEditorPane pane, Action action, KeyStroke stroke) {

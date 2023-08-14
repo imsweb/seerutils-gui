@@ -26,9 +26,10 @@ public class SeerListTest {
     public static void main(String[] args) {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
+        SeerGuiUtils.setFontDelta(0);
+
         JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //frame.setPreferredSize(new Dimension(900, 300));
         frame.setResizable(false);
 
         JPanel contentPnl = SeerGuiUtils.createContentPanel(frame, 0);
@@ -62,10 +63,7 @@ public class SeerListTest {
                 if (filter == null || filter.trim().isEmpty())
                     return true;
 
-                if (element.toString().contains(filter))
-                    return true;
-
-                return false;
+                return element.toString().contains(filter);
             }
         };
         final SeerList<MyTestClass> l1 = new SeerList<>(myModel, SeerList.DISPLAY_MODE_DOTTED_LINES, false);
@@ -132,7 +130,7 @@ public class SeerListTest {
 
     private static class MyTestClass {
 
-        private String _s;
+        private final String _s;
 
         public MyTestClass(String s) {
             _s = s;

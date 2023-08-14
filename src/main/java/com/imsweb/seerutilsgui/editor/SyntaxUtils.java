@@ -29,7 +29,12 @@ import javax.swing.text.PlainDocument;
 /**
  * This class contains static utility methods to make highlighting in text components easier.
  */
-public class SyntaxUtils {
+@SuppressWarnings("unused")
+public final class SyntaxUtils {
+
+    private SyntaxUtils() {
+        // utility class only...
+    }
 
     // This subclass is used in our highlighting code
     public static class SimpleMarker extends DefaultHighlighter.DefaultHighlightPainter {
