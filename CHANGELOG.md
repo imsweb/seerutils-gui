@@ -2,7 +2,7 @@
 
 **Changes in version 1.20**
 
-- Raised code compatibility to Java 17.
+- Raised code compatibility to Java 11.
 - Code cleanup, many changes...
 
 **Changes in version 1.19**

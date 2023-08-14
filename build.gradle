@@ -10,8 +10,8 @@ plugins {
 group = 'com.imsweb'
 version = file('VERSION').text.trim()
 description = 'Shared Swing library for the SEER Java projects'
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 println "Starting build using JDK ${Runtime.version().feature()}"
 
