@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import javax.swing.text.Utilities;
  * merged.  You can also pass a properties instance and merge your prefered
  * styles into the default styles
  */
+@SuppressWarnings("unused")
 public final class SyntaxStyles {
 
     /**
@@ -179,21 +181,21 @@ public final class SyntaxStyles {
             FontMetrics fontMetrics = graphics.getFontMetrics();
             int a = fontMetrics.getAscent();
             int h = a + fontMetrics.getDescent();
-            int w = Utilities.getTabbedTextWidth(segment, fontMetrics, 0, e, startOffset);
+            float w = Utilities.getTabbedTextWidth(segment, fontMetrics, (float)0, e, startOffset);
             int rX = x - 1;
             int rY = y - a;
-            int rW = w + 2;
+            int rW = (int)w + 2;
             if ((getFontStyle() & 0x10) != 0) {
                 graphics.setColor(Color.decode("#EEEEEE"));
                 graphics.fillRect(rX, rY, rW, h);
             }
             graphics.setColor(getColor());
-            x = Utilities.drawTabbedText(segment, x, y, graphics, e, startOffset);
+            float x2 = Utilities.drawTabbedText(segment, (float)x, (float)y, (Graphics2D)graphics, e, startOffset);
             if ((getFontStyle() & 0x8) != 0) {
                 graphics.setColor(Color.RED);
                 graphics.drawRect(rX, rY, rW, h);
             }
-            return x;
+            return (int)x2;
         }
     }
 }

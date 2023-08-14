@@ -288,9 +288,9 @@ public class SyntaxDocument extends PlainDocument {
 
     /**
      * This is used to return the other part of a paired token in the document.
-     * A paired part has token.pairValue <> 0, and the paired token will
+     * A paired part has token.pairValue different from 0, and the paired token will
      * have the negative of t.pairValue.
-     * This method properly handles nestings of same pairValues, but overlaps
+     * This method properly handles nesting of same pairValues, but overlaps
      * are not checked.
      * if The document does not contain a paired
      * @param t token

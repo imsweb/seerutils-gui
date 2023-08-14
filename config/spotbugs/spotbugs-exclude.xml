@@ -15,4 +15,7 @@
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
     </Match>
+    <Match>
+        <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS"/>
+    </Match>
 </FindBugsFilter>
