@@ -2,7 +2,8 @@
 
 **Changes in version 1.20**
 
-- Added ability to provide a font for the specialized tabbed pane.
+- Raised code compatibility to Java 17.
+- Code cleanup, many changes...
 
 **Changes in version 1.19**
 
