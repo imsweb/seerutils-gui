@@ -342,8 +342,9 @@ public class SeerSpinner extends JPanel implements ActionListener {
 
     @Override
     public void paint(Graphics g) {
-        if (!(g instanceof Graphics2D g2d))
+        if (!(g instanceof Graphics2D))
             return;
+        Graphics2D g2d = (Graphics2D)g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         doPaint(g2d, this.getWidth(), this.getHeight());
