@@ -97,8 +97,8 @@ public final class SyntaxStyles {
      * Draw the given Token.  This will simply find the proper SyntaxStyle for the TokenType and then asks the proper Style to draw the text of the Token.
      * <p/>
      * @param segment the source of the text
-     * @param x the X origin >= 0
-     * @param y the Y origin >= 0
+     * @param x the X origin greater or equals to 0
+     * @param y the Y origin greater or equals to 0
      * @param graphics the graphics context
      * @param e how to expand the tabs. If this value is null, tabs will be expanded as a space character.
      * @param token token
