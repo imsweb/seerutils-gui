@@ -51,7 +51,7 @@ import com.imsweb.seerutilsgui.table.SeerTable;
 
 public class SiteSpecificySurgeryTablesViewer extends JFrame {
 
-    private SeerList<String> _titleList;
+    private final SeerList<String> _titleList;
     private JSplitPane _pane;
 
     public SiteSpecificySurgeryTablesViewer() {
@@ -65,7 +65,7 @@ public class SiteSpecificySurgeryTablesViewer extends JFrame {
         _titleList = new SeerList<>(allTitles, SeerList.DISPLAY_MODE_DOTTED_LINES, SeerList.FILTERING_MODE_STARTS_WITH, false, null);
         _titleList.setBorder(new LineBorder(SeerGuiUtils.COLOR_COMP_FOCUS_OUT));
         _titleList.addListSelectionListener(e -> {
-            String selectedTitle = (String)_titleList.getSelectedValue();
+            String selectedTitle = _titleList.getSelectedValue();
             if (selectedTitle != null) {
                 _pane.setLeftComponent(createTablePanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, selectedTitle)));
                 _pane.setRightComponent(buildDetailsPanel(SiteSpecificSurgeryUtils.getInstance().getTable(2020, selectedTitle)));

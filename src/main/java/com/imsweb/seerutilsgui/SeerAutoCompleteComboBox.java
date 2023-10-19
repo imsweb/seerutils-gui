@@ -264,9 +264,9 @@ public class SeerAutoCompleteComboBox extends JComboBox<String> {
 
         private String _selected;
         private static final int _LIMIT = 20;
-        private final transient Data _data = new Data();
+        private final transient SeerAutoCompleteComboBoxData _data = new SeerAutoCompleteComboBoxData();
 
-        class Data {
+        class SeerAutoCompleteComboBoxData {
 
             private final List<String> _list = new ArrayList<>(_LIMIT);
             private List<String> _filtered;

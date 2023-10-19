@@ -1,17 +1,20 @@
+import java.time.Duration
+
 plugins {
     id 'java-library'
     id 'checkstyle'
-    id 'com.github.spotbugs' version '5.0.13'
+    id 'com.github.spotbugs' version '5.2.1'
     id 'maven-publish'
     id 'signing'
-    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.3.0' // publish to Maven Central
+    id 'com.github.ben-manes.versions' version '0.49.0' // check for out-of-date dependencies (run 'dependencyUpdates' manually)
+    id 'org.sonatype.gradle.plugins.scan' version '2.6.1' // scan for vulnerabilities
+    id 'org.sonarqube' version '4.4.1.3373' // sonarQube analysis
 }
 
 group = 'com.imsweb'
 version = file('VERSION').text.trim()
 description = 'Shared Swing library for the SEER Java projects'
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
 
 println "Starting build using JDK ${Runtime.version().feature()}"
 
@@ -19,7 +22,6 @@ repositories {
     mavenCentral()
 }
 
-// dependency jars
 dependencies {
     testImplementation 'org.apache.commons:commons-lang3:3.13.0'
     testImplementation 'com.opencsv:opencsv:5.8'
@@ -29,19 +31,22 @@ dependencies {
 }
 
 // enforce UTF-8, display the compilation warnings
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:unchecked'
     //options.compilerArgs << '-Xlint'
 }
 
 // the Javadoc was made way too strict in Java 8 and it's not worth the time fixing everything!
-tasks.withType(Javadoc) {
+tasks.withType(Javadoc).configureEach {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 // generate javadoc and sources (required by Nexus)
 java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
     withJavadocJar()
     withSourcesJar()
 }
@@ -71,7 +76,20 @@ checkstyle {
 // spotbugs plugin settings
 spotbugs {
     ignoreFailures = true
-    excludeFilter = project(':').file("config/spotbugs/spotbugs-exclude.xml")
+    excludeFilter.set(project(':').file("config/spotbugs/spotbugs-exclude.xml"))
+}
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+// https://github.com/ben-manes/gradle-versions-plugin
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
 }
 
 // needed to deploy to Maven Central
@@ -122,8 +140,8 @@ publishing {
 
 // setup JAR signing
 signing {
-    def signingKey = project.findProperty('signing.armored.key') ?: ''
-    def signingPassword = project.findProperty('signing.armored.password') ?: ''
+    String signingKey = project.findProperty('signing.armored.key') ?: ''
+    String signingPassword = project.findProperty('signing.armored.password') ?: ''
 
     useInMemoryPgpKeys(signingKey, signingPassword)
 
@@ -141,24 +159,18 @@ nexusPublishing {
         }
     }
 
-    clientTimeout = java.time.Duration.ofSeconds(300)
-    connectTimeout = java.time.Duration.ofSeconds(60)
+    clientTimeout = Duration.ofSeconds(300)
+    connectTimeout = Duration.ofSeconds(60)
 
     transitionCheckOptions {
         maxRetries.set(50)
-        delayBetween.set(java.time.Duration.ofMillis(5000))
+        delayBetween.set(Duration.ofMillis(5000))
     }
-}
-
-// don't try to release a snapshot to a non-snapshot repository, that won't work anyway
-if (version.endsWith('-SNAPSHOT')) {
-    gradle.startParameter.excludedTaskNames += 'signMavenJavaPublication'
-    gradle.startParameter.excludedTaskNames += 'closeAndReleaseSonatypeStagingRepository'
 }
 
 // Gradle wrapper, this allows to build the project without having to install Gradle!
 wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '8.4'
     distributionType = Wrapper.DistributionType.ALL
 }
 
