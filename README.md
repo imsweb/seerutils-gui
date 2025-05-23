@@ -1,6 +1,6 @@
 # SEER*Utils GUI
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.imsweb/seerutils-gui.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.imsweb/seerutils-gui)
+[![Maven Central](https://img.shields.io/maven-central/v/com.imsweb/seerutils-gui.svg)](https://central.sonatype.com/artifact/com.imsweb/seerutils-gui)
 
 This project contains a few GUI utility classes for SEER Java projects.
 
