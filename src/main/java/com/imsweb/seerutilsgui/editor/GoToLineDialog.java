@@ -3,7 +3,6 @@ package com.imsweb.seerutilsgui.editor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -129,8 +129,8 @@ public class GoToLineDialog extends JDialog implements ActionListener, SeerWindo
             int start = SyntaxUtils.getSyntaxDocument(_comp).getStartOfLineFromLineNumber(line - 1);
             _comp.setCaretPosition(start);
             // this will be fixed when the project stops supporting Java 8...
-            Rectangle rect = _comp.modelToView(start);
-            _comp.scrollRectToVisible(rect);
+            Rectangle2D rect = _comp.modelToView2D(start);
+            _comp.scrollRectToVisible(rect.getBounds());
         }
         catch (BadLocationException e1) {
             throw new RuntimeException("Unable to go to line", e1);

@@ -186,12 +186,16 @@ public final class SeerGuiUtils {
      * <p/>
      * Created on Jan 6, 2012 by murphyr
      * @param dir directory to open
-     * @param fileToSelect file to select inthat directory
+     * @param fileToSelect file to select in that directory
      */
     public static void openDirectory(File dir, String fileToSelect) throws IOException {
         if (fileToSelect != null) {
-            if (new File(dir, fileToSelect).exists() && System.getProperty("os.name").startsWith("Windows"))
-                Runtime.getRuntime().exec("Explorer /select," + dir.getAbsolutePath() + "\\" + fileToSelect);
+            if (new File(dir, fileToSelect).exists() && System.getProperty("os.name").startsWith("Windows")) {
+                new ProcessBuilder(
+                        "explorer",
+                        "/select," + dir.getAbsolutePath() + "\\" + fileToSelect
+                ).start();
+            }
             else
                 Desktop.getDesktop().open(dir);
         }
@@ -213,8 +217,7 @@ public final class SeerGuiUtils {
     public static synchronized SeerUniqueWindow show(String windowId) {
         SeerUniqueWindow window = _CACHED_WINDOWS.get(windowId);
         if (window != null) {
-            if (window instanceof JFrame) {
-                JFrame frame = (JFrame)window;
+            if (window instanceof JFrame frame) {
                 if (frame.getExtendedState() == JFrame.ICONIFIED)
                     frame.setExtendedState(JFrame.NORMAL);
                 frame.toFront();
@@ -616,6 +619,7 @@ public final class SeerGuiUtils {
         return createLabel(text, style, Color.BLACK);
     }
 
+    @SuppressWarnings("MagicConstant")
     public static JLabel createLabel(String text, int style, Color color) {
         JLabel lbl = new JLabel(text);
         lbl.setOpaque(false);
@@ -624,6 +628,7 @@ public final class SeerGuiUtils {
         return lbl;
     }
 
+    @SuppressWarnings("MagicConstant")
     public static JLabel createLabel(String text, int style, int size, Color color) {
         JLabel lbl = new JLabel(text);
         lbl.setOpaque(false);
@@ -644,6 +649,7 @@ public final class SeerGuiUtils {
         return createCheckBox(text, action, Font.PLAIN, listener);
     }
 
+    @SuppressWarnings("MagicConstant")
     public static JCheckBox createCheckBox(String text, String action, int style, ActionListener listener) {
         JCheckBox box = new JCheckBox(text);
         box.setOpaque(false);
@@ -660,6 +666,7 @@ public final class SeerGuiUtils {
         return createRadioButton(text, action, Font.PLAIN, listener);
     }
 
+    @SuppressWarnings("MagicConstant")
     public static JRadioButton createRadioButton(String text, String action, int style, ActionListener listener) {
         JRadioButton btn = new JRadioButton(text);
         btn.setOpaque(false);

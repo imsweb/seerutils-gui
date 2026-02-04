@@ -5,7 +5,7 @@ package com.imsweb.seerutilsgui.editor;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -60,18 +60,14 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
         super();
 
         // type
-        if (SYNTAX_TYPE_PLAIN.equals(type))
-            _lexer = null;
-        else if (SYNTAX_TYPE_PROPERTIES.equals(type))
-            _lexer = new LexerProperties();
-        else if (SYNTAX_TYPE_XML.equals(type))
-            _lexer = new LexerXml();
-        else if (SYNTAX_TYPE_GROOVY.equals(type))
-            _lexer = new LexerGroovy();
-        else if (SYNTAX_TYPE_SQL.equals(type))
-            _lexer = new LexerSql();
-        else
-            throw new RuntimeException("Unsupported type: " + type);
+        switch (type) {
+            case SYNTAX_TYPE_PLAIN -> _lexer = null;
+            case SYNTAX_TYPE_PROPERTIES -> _lexer = new LexerProperties();
+            case SYNTAX_TYPE_XML -> _lexer = new LexerXml();
+            case SYNTAX_TYPE_GROOVY -> _lexer = new LexerGroovy();
+            case SYNTAX_TYPE_SQL -> _lexer = new LexerSql();
+            case null, default -> throw new RuntimeException("Unsupported type: " + type);
+        }
 
         // style
         _style = new SyntaxStyles(syntaxProperties);
@@ -94,7 +90,7 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
     public View create(Element element) {
         return new PlainView(element) {
             @Override
-            protected int drawUnselectedText(Graphics graphics, int x, int y, int p0, int p1) {
+            protected float drawUnselectedText(Graphics2D graphics, float x, float y, int p0, int p1) {
                 Font saveFont = graphics.getFont();
                 Color saveColor = graphics.getColor();
                 SyntaxDocument doc = (SyntaxDocument)getDocument();
@@ -112,7 +108,7 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
                         if (start < t.start) {
                             int length = t.start - start;
                             doc.getText(start, length, segment);
-                            x = _style.drawText(segment, x, y, graphics, this, new LexerToken(LexerToken.TokenType.DEFAULT, start, length));
+                            x = _style.drawText(segment, (int)x, (int)y, graphics, this, new LexerToken(LexerToken.TokenType.DEFAULT, start, length));
                         }
                         // t and s are the actual start and length of what we should
                         // put on the screen.  assume these are the whole token....
@@ -130,14 +126,14 @@ public class SyntaxKit extends DefaultEditorKit implements ViewFactory {
                             l = p1 - s;
                         }
                         doc.getText(s, l, segment);
-                        x = _style.drawText(segment, x, y, graphics, this, t);
+                        x = _style.drawText(segment, (int)x, (int)y, graphics, this, t);
                         start = t.end();
                     }
                     // now for any remaining text not tokenized:
                     if (start < p1) {
                         int length = p1 - start;
                         doc.getText(start, length, segment);
-                        x = _style.drawText(segment, x, y, graphics, this, new LexerToken(LexerToken.TokenType.DEFAULT, start, length));
+                        x = _style.drawText(segment, (int)x, (int)y, graphics, this, new LexerToken(LexerToken.TokenType.DEFAULT, start, length));
                     }
                 }
                 catch (BadLocationException ex) {

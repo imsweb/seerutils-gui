@@ -5,7 +5,6 @@ package com.imsweb.seerutilsgui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -94,13 +93,13 @@ public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFa
         return new WrappedPlainView(elem, true) {
 
             @Override
-            protected int drawUnselectedText(Graphics g, int x, int y, int p0, int p1) throws BadLocationException {
+            protected float drawUnselectedText(Graphics2D g, float x, float y, int p0, int p1) throws BadLocationException {
                 // apply anti-aliasing fix
-                ((Graphics2D)g).addRenderingHints(getHints());
+                g.addRenderingHints(getHints());
 
                 Document doc = getDocument();
                 Segment segment = getLineBuffer();
-                int ret = x;
+                float ret = x;
                 int currentPos = p0;
 
                 // this is the tricky part; we have to split what needs to be drawn according to the requested highlighting (I am calling gaps the areas that need to be highlighted)
@@ -113,9 +112,9 @@ public class SeerHighlightingEditorKit extends StyledEditorKit implements ViewFa
                     if (currentPos < nextGap.get(0)) {
                         g.setColor(_foregroundColor);
                         g.setFont(_font == null ? g.getFont().deriveFont(Font.PLAIN) : _font);
-                        doc.getText(currentPos, nextGap.get(0) - currentPos, segment);
+                        doc.getText(currentPos, nextGap.getFirst() - currentPos, segment);
                         ret = Utilities.drawTabbedText(segment, ret, y, g, this, currentPos);
-                        currentPos = nextGap.get(0);
+                        currentPos = nextGap.getFirst();
                     }
 
                     // then draw the gap (but never go past p1)

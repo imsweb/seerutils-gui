@@ -53,13 +53,10 @@ public final class SyntaxUtils {
     public static void removeMarkers(JTextComponent component, SimpleMarker marker) {
         Highlighter hihglighter = component.getHighlighter();
 
-        for (Highlighter.Highlight h : hihglighter.getHighlights()) {
-            if (h.getPainter() instanceof SimpleMarker) {
-                SimpleMarker hMarker = (SimpleMarker)h.getPainter();
+        for (Highlighter.Highlight h : hihglighter.getHighlights())
+            if (h.getPainter() instanceof SimpleMarker hMarker)
                 if (marker == null || hMarker.equals(marker))
                     hihglighter.removeHighlight(h);
-            }
-        }
     }
 
     /**
@@ -158,8 +155,7 @@ public final class SyntaxUtils {
         String line = null;
 
         Document doc = component.getDocument();
-        if (doc instanceof PlainDocument) {
-            PlainDocument pDoc = (PlainDocument)doc;
+        if (doc instanceof PlainDocument pDoc) {
             int start = pDoc.getParagraphElement(pos).getStartOffset();
             int end = pDoc.getParagraphElement(pos).getEndOffset();
             try {
@@ -185,7 +181,7 @@ public final class SyntaxUtils {
      */
     public static int getLineNumber(JTextComponent component, int pos) {
         try {
-            Rectangle r = component.modelToView(pos);
+            Rectangle r = component.modelToView2D(pos).getBounds();
             if (r == null)
                 return 0;
             return r.y / component.getFontMetrics(component.getFont()).getHeight();
@@ -203,12 +199,10 @@ public final class SyntaxUtils {
      */
     public static int getColumnNumber(JTextComponent component, int pos) {
         try {
-            // this will be fixed when the project stops supporting Java 8...
-            Rectangle r = component.modelToView(pos);
+            Rectangle r = component.modelToView2D(pos).getBounds();
             if (r == null)
                 return 0;
-            // this will be fixed when the project stops supporting Java 8...
-            return pos - component.viewToModel(new Point(0, r.y));
+            return pos - component.viewToModel2D(new Point(0, r.y));
         }
         catch (BadLocationException ex) {
             throw new RuntimeException("Unable to get current line", ex);

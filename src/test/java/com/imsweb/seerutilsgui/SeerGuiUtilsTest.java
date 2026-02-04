@@ -10,6 +10,6 @@ public class SeerGuiUtilsTest {
     public static void main(String[] args) throws Exception {
         SeerGuiUtils.setupGuiEnvForSeerProject();
 
-        SeerGuiUtils.openDirectory(new File("E:\\"), "whatever");
+        SeerGuiUtils.openDirectory(new File("C:\\dev"), "notes.txt");
     }
 }

@@ -1,5 +1,10 @@
 ## SEER*Utils GUI Version History
 
+**Changes in version 1.21 (not released yet)**
+
+- Changed the minimum Java language for this library from Java 11 to Java 21.
+- Updated dependencies.
+
 **Changes in version 1.20**
 
 - Raised code compatibility to Java 11.
