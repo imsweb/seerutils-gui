@@ -15,7 +15,7 @@ package com.imsweb.seerutilsgui.editor;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,10 +181,10 @@ public final class SyntaxUtils {
      */
     public static int getLineNumber(JTextComponent component, int pos) {
         try {
-            Rectangle r = component.modelToView2D(pos).getBounds();
-            if (r == null)
+            Rectangle2D r2d = component.modelToView2D(pos);
+            if (r2d == null)
                 return 0;
-            return r.y / component.getFontMetrics(component.getFont()).getHeight();
+            return r2d.getBounds().y / component.getFontMetrics(component.getFont()).getHeight();
         }
         catch (BadLocationException ex) {
             throw new RuntimeException("Unable to get current line", ex);
@@ -199,10 +199,10 @@ public final class SyntaxUtils {
      */
     public static int getColumnNumber(JTextComponent component, int pos) {
         try {
-            Rectangle r = component.modelToView2D(pos).getBounds();
-            if (r == null)
+            Rectangle2D r2d = component.modelToView2D(pos);
+            if (r2d == null)
                 return 0;
-            return pos - component.viewToModel2D(new Point(0, r.y));
+            return pos - component.viewToModel2D(new Point(0, r2d.getBounds().y));
         }
         catch (BadLocationException ex) {
             throw new RuntimeException("Unable to get current line", ex);

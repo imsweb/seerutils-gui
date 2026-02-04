@@ -23,6 +23,7 @@ dependencies {
     testImplementation 'com.imsweb:seerutils:5.7'
     testImplementation 'com.imsweb:layout:7.0'
     testImplementation 'com.imsweb:algorithms:5.10'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 java {
